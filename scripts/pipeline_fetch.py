@@ -9,7 +9,7 @@ where digest = scripts.common.link_digest(link) — Extract reads the same root
 recursively; the naming contract is shared, not copied.
 
 CLI:
-    python3 scripts/pipeline_fetch.py --findings data/raw/watch-2026-08-26.json \
+    python3 -m scripts.pipeline_fetch --findings data/raw/watch-2026-08-26.json \
         --state data/raw/download-state.json --articles data/raw/articles
 """
 import argparse

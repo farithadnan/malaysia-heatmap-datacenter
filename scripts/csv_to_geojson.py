@@ -4,7 +4,7 @@ The single conversion point between storage and the map (spec §9):
 the Leaflet frontend only ever reads the GeoJSON this script produces.
 
 Usage:
-    python3 scripts/csv_to_geojson.py <input.csv> <output.geojson>
+    python3 -m scripts.csv_to_geojson <input.csv> <output.geojson>
 
 Exit status is 0 even when rows are skipped — skips are warnings
 (printed to stderr and returned in the counts), never silent drops
