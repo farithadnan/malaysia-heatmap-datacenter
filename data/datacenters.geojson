@@ -61,7 +61,7 @@
         ]
       },
       "properties": {
-        "name": "Gp3 Data Center",
+        "name": "ZDATA Johor GP3 (OSM-tagged site; directory lists as planned)",
         "operator": "",
         "address": "",
         "latitude": "1.4880951",
@@ -186,364 +186,14 @@
         ]
       },
       "properties": {
-        "name": "TMONE Klang Valley Data Center",
-        "operator": "",
-        "address": "",
+        "name": "TM Klang Valley Data Center (KVDC)",
+        "operator": "TM Global",
+        "address": "Lingkaran Teknokrat Barat, 63000 Cyberjaya",
         "latitude": "2.9325346",
         "longitude": "101.6573189",
         "capacity_mw": null,
         "capacity_type": "",
-        "capacity_source": "OpenStreetMap way/848498975",
-        "status": "",
-        "connection_voltage": "",
-        "verification_status": "needs review",
-        "last_updated": "2026-08-26",
-        "report_url": ""
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          103.4134036,
-          1.7033833
-        ]
-      },
-      "properties": {
-        "name": "",
-        "operator": "",
-        "address": "",
-        "latitude": "1.7033833",
-        "longitude": "103.4134036",
-        "capacity_mw": null,
-        "capacity_type": "",
-        "capacity_source": "OpenStreetMap way/1432337885",
-        "status": "",
-        "connection_voltage": "",
-        "verification_status": "needs review",
-        "last_updated": "2026-08-26",
-        "report_url": ""
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          103.4190473,
-          1.6939827
-        ]
-      },
-      "properties": {
-        "name": "",
-        "operator": "",
-        "address": "",
-        "latitude": "1.6939827",
-        "longitude": "103.4190473",
-        "capacity_mw": null,
-        "capacity_type": "",
-        "capacity_source": "OpenStreetMap way/1432337898",
-        "status": "",
-        "connection_voltage": "",
-        "verification_status": "needs review",
-        "last_updated": "2026-08-26",
-        "report_url": ""
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          103.4123772,
-          1.6921349
-        ]
-      },
-      "properties": {
-        "name": "",
-        "operator": "",
-        "address": "",
-        "latitude": "1.6921349",
-        "longitude": "103.4123772",
-        "capacity_mw": null,
-        "capacity_type": "",
-        "capacity_source": "OpenStreetMap way/1432337899",
-        "status": "",
-        "connection_voltage": "",
-        "verification_status": "needs review",
-        "last_updated": "2026-08-26",
-        "report_url": ""
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          103.4179246,
-          1.6930986
-        ]
-      },
-      "properties": {
-        "name": "",
-        "operator": "",
-        "address": "",
-        "latitude": "1.6930986",
-        "longitude": "103.4179246",
-        "capacity_mw": null,
-        "capacity_type": "",
-        "capacity_source": "OpenStreetMap way/1432337900",
-        "status": "",
-        "connection_voltage": "",
-        "verification_status": "needs review",
-        "last_updated": "2026-08-26",
-        "report_url": ""
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          103.417064,
-          1.6923957
-        ]
-      },
-      "properties": {
-        "name": "",
-        "operator": "",
-        "address": "",
-        "latitude": "1.6923957",
-        "longitude": "103.417064",
-        "capacity_mw": null,
-        "capacity_type": "",
-        "capacity_source": "OpenStreetMap way/1432337901",
-        "status": "",
-        "connection_voltage": "",
-        "verification_status": "needs review",
-        "last_updated": "2026-08-26",
-        "report_url": ""
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          103.4117312,
-          1.6977265
-        ]
-      },
-      "properties": {
-        "name": "",
-        "operator": "",
-        "address": "",
-        "latitude": "1.6977265",
-        "longitude": "103.4117312",
-        "capacity_mw": null,
-        "capacity_type": "",
-        "capacity_source": "OpenStreetMap way/1432337902",
-        "status": "",
-        "connection_voltage": "",
-        "verification_status": "needs review",
-        "last_updated": "2026-08-26",
-        "report_url": ""
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          103.4125333,
-          1.6984869
-        ]
-      },
-      "properties": {
-        "name": "",
-        "operator": "",
-        "address": "",
-        "latitude": "1.6984869",
-        "longitude": "103.4125333",
-        "capacity_mw": null,
-        "capacity_type": "",
-        "capacity_source": "OpenStreetMap way/1432337903",
-        "status": "",
-        "connection_voltage": "",
-        "verification_status": "needs review",
-        "last_updated": "2026-08-26",
-        "report_url": ""
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          103.4128608,
-          1.69994
-        ]
-      },
-      "properties": {
-        "name": "",
-        "operator": "",
-        "address": "",
-        "latitude": "1.69994",
-        "longitude": "103.4128608",
-        "capacity_mw": null,
-        "capacity_type": "",
-        "capacity_source": "OpenStreetMap way/1432337904",
-        "status": "",
-        "connection_voltage": "",
-        "verification_status": "needs review",
-        "last_updated": "2026-08-26",
-        "report_url": ""
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          103.4076651,
-          1.6975615
-        ]
-      },
-      "properties": {
-        "name": "",
-        "operator": "",
-        "address": "",
-        "latitude": "1.6975615",
-        "longitude": "103.4076651",
-        "capacity_mw": null,
-        "capacity_type": "",
-        "capacity_source": "OpenStreetMap way/1432337905",
-        "status": "",
-        "connection_voltage": "",
-        "verification_status": "needs review",
-        "last_updated": "2026-08-26",
-        "report_url": ""
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          103.412434,
-          1.7046043
-        ]
-      },
-      "properties": {
-        "name": "",
-        "operator": "",
-        "address": "",
-        "latitude": "1.7046043",
-        "longitude": "103.412434",
-        "capacity_mw": null,
-        "capacity_type": "",
-        "capacity_source": "OpenStreetMap way/1432337908",
-        "status": "",
-        "connection_voltage": "",
-        "verification_status": "needs review",
-        "last_updated": "2026-08-26",
-        "report_url": ""
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          103.4103001,
-          1.7029916
-        ]
-      },
-      "properties": {
-        "name": "",
-        "operator": "",
-        "address": "",
-        "latitude": "1.7029916",
-        "longitude": "103.4103001",
-        "capacity_mw": null,
-        "capacity_type": "",
-        "capacity_source": "OpenStreetMap way/1432337909",
-        "status": "",
-        "connection_voltage": "",
-        "verification_status": "needs review",
-        "last_updated": "2026-08-26",
-        "report_url": ""
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          103.4089932,
-          1.7019183
-        ]
-      },
-      "properties": {
-        "name": "",
-        "operator": "",
-        "address": "",
-        "latitude": "1.7019183",
-        "longitude": "103.4089932",
-        "capacity_mw": null,
-        "capacity_type": "",
-        "capacity_source": "OpenStreetMap way/1432337910",
-        "status": "",
-        "connection_voltage": "",
-        "verification_status": "needs review",
-        "last_updated": "2026-08-26",
-        "report_url": ""
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          103.4106934,
-          1.6988159
-        ]
-      },
-      "properties": {
-        "name": "",
-        "operator": "",
-        "address": "",
-        "latitude": "1.6988159",
-        "longitude": "103.4106934",
-        "capacity_mw": null,
-        "capacity_type": "",
-        "capacity_source": "OpenStreetMap way/1432337911",
-        "status": "",
-        "connection_voltage": "",
-        "verification_status": "needs review",
-        "last_updated": "2026-08-26",
-        "report_url": ""
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          103.4208341,
-          1.6942378
-        ]
-      },
-      "properties": {
-        "name": "",
-        "operator": "",
-        "address": "",
-        "latitude": "1.6942378",
-        "longitude": "103.4208341",
-        "capacity_mw": null,
-        "capacity_type": "",
-        "capacity_source": "OpenStreetMap way/1432337912",
+        "capacity_source": "OpenStreetMap way/848498975 + datacentermap.com/malaysia/cyberjaya/tm-klang-valley-data-center-kvdc/",
         "status": "",
         "connection_voltage": "",
         "verification_status": "needs review",
@@ -594,6 +244,31 @@
         "capacity_mw": null,
         "capacity_type": "",
         "capacity_source": "OpenStreetMap way/1509567732",
+        "status": "",
+        "connection_voltage": "",
+        "verification_status": "needs review",
+        "last_updated": "2026-08-26",
+        "report_url": ""
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.413419,
+          1.697948
+        ]
+      },
+      "properties": {
+        "name": "(unnamed campus cluster — 14 buildings)",
+        "operator": "",
+        "address": "near Kulai, Johor (approx.)",
+        "latitude": "1.697948",
+        "longitude": "103.413419",
+        "capacity_mw": null,
+        "capacity_type": "",
+        "capacity_source": "OpenStreetMap: 14-way building cluster starting way/1432337885 (same area, consecutive IDs)",
         "status": "",
         "connection_voltage": "",
         "verification_status": "needs review",
