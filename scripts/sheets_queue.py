@@ -77,9 +77,10 @@ def make_transport(service_account_info=None):
 
     def transport(method, url, body):
         creds.refresh(Request())
+        data = None if body is None else json.dumps(body).encode("utf-8")
         req = urllib.request.Request(
             url,
-            data=json.dumps(body).encode("utf-8"),
+            data=data,
             headers={"Authorization": f"Bearer {creds.token}",
                      "Content-Type": "application/json"},
             method=method)
