@@ -14,7 +14,6 @@ CLI:
 import argparse
 import hashlib
 import json
-import urllib.parse
 import urllib.request
 import xml.etree.ElementTree as ET
 from datetime import date
@@ -45,14 +44,8 @@ def parse_rss(xml_text):
 
 
 # Public endpoint homes (one place only). Source URLs themselves live in
-# data/sources.json — configuration, not code.
-GOOGLE_NEWS_RSS_URL = "https://news.google.com/rss/search"
-
-
-def google_news_rss_url(query):
-    """Standing search feed URL, localized to Malaysia (spec §8)."""
-    return (GOOGLE_NEWS_RSS_URL + "?"
-            + urllib.parse.urlencode({"q": query, "hl": "en-MY", "gl": "MY", "ceid": "MY:en"}))
+# data/sources.json — configuration, not code. (The Google News entries there
+# were generated at https://news.google.com/rss/search with MY locale params.)
 
 
 def dedupe_by_link(items):

@@ -6,7 +6,7 @@ import unittest
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
 from scripts.pipeline_watch import (  # noqa: E402
-    dedupe_by_link, google_news_rss_url, hash_text, parse_rss, run, snapshot_pages)
+    dedupe_by_link, hash_text, parse_rss, run, snapshot_pages)
 
 RSS_FIXTURE = """<?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0"><channel><title>Google News</title>
@@ -37,14 +37,6 @@ class TestParseRss(unittest.TestCase):
     def test_raises_on_malformed_xml(self):
         with self.assertRaises(ValueError):
             parse_rss("<rss><channel><item>")
-
-
-class TestGoogleNewsRssUrl(unittest.TestCase):
-    def test_builds_malaysia_localized_search_url(self):
-        url = google_news_rss_url("data center Malaysia MW")
-        self.assertTrue(url.startswith("https://news.google.com/rss/search?"))
-        self.assertIn("q=data+center+Malaysia+MW", url)
-        self.assertIn("gl=MY", url)
 
 
 class TestDedupeByLink(unittest.TestCase):

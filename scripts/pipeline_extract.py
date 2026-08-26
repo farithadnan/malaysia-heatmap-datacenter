@@ -156,18 +156,13 @@ def dedupe_against_existing(new_rows, existing_rows):
     return kept, skipped
 
 
-def sha1_digest(text):
-    import hashlib
-    return hashlib.sha1(text.encode()).hexdigest()[:12]
-
-
 def run_extraction(articles_dir, findings_path, llm_client, today, scraper=None):
     """All .html/.md articles from a watch/fetch sweep -> schema rows + skip log."""
     with open(findings_path, encoding="utf-8") as f:
         findings = json.load(f)
     by_digest = {}
     for a in findings.get("articles", []):
-        by_digest[sha1_digest(a["link"])] = a
+        by_digest[link_digest(a["link"])] = a
 
     patterns = ["**/*.html", "**/*.md", "*.html", "*.md"]
     paths = sorted({p for pat in patterns
