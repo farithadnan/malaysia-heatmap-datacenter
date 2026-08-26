@@ -46,17 +46,28 @@ Repo → **Settings → Secrets and variables → Actions → New repository sec
 
 ## 5. Sanity check (once filled in)
 
+Local runs need `google-auth` installed (Actions installs it from
+`requirements.txt`; locally it goes to your user site):
+
+```bash
+python3 -m pip install --user --break-system-packages google-auth
+```
+
+Then:
+
 ```bash
 python3 - <<'EOF'
-from scripts.sheets_queue import make_transport, sheet_api_url
-import urllib.request, json
-t = make_transport()   # reads .env automatically
-print("auth OK — token minted; sheet reachable:", bool(t("GET",
-      f"https://sheets.googleapis.com/v4/spreadsheets/{__import__('os').environ['SHEET_ID']}", None)))
+import os
+from scripts.sheets_queue import make_transport
+t = make_transport()   # loads .env, mints a service-account token
+sid = os.environ["SHEET_ID"]
+resp = t("GET", f"https://sheets.googleapis.com/v4/spreadsheets/{sid}", None)
+print("auth OK — sheet reachable:", resp["properties"]["title"])
+print("tabs:", [s["properties"]["title"] for s in resp["sheets"]])
 EOF
 ```
 
-Expect `auth OK — True`. Any 401/403/404 means: Sheets API not enabled (step 2.3), Sheet not shared with the service account (step 2.7), or Sheet ID wrong (step 1.5).
+Expect your sheet's title and `['Main', 'Pending']`. Any 401/403/404 means: Sheets API not enabled (step 2.3), Sheet not shared with the service account (step 2.7), or Sheet ID wrong (step 1.5).
 
 ## What writes where (spec §8 rule)
 
