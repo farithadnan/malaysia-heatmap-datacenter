@@ -138,7 +138,7 @@ class TestOpenAICompatibleClient(unittest.TestCase):
             base_url="https://api.deepseek.com", api_key="sk-ds", model="deepseek-chat",
             poster=poster)
         self.assertEqual(client("text")["name"], "DS DC")
-        self.assertEqual(captured["url"], "https://api.deepseek.com/chat/completions")
+        self.assertEqual(captured["url"], "https://api.deepseek.com/v1/chat/completions")
         self.assertEqual(captured["headers"]["Authorization"], "Bearer sk-ds")
         self.assertEqual(captured["body"]["model"], "deepseek-chat")
 
@@ -160,7 +160,7 @@ class TestEnvFactory(unittest.TestCase):
             {"LLM_PROVIDER": "deepseek", "LLM_API_KEY": "k", "LLM_MODEL": "deepseek-chat"},
             poster=poster)
         c("x")
-        self.assertEqual(captured["url"], "https://api.deepseek.com/chat/completions")
+        self.assertEqual(captured["url"], "https://api.deepseek.com/v1/chat/completions")
 
     def test_modal_style_custom_base_url(self):
         captured = {}
@@ -179,6 +179,70 @@ class TestEnvFactory(unittest.TestCase):
     def test_missing_key_raises_clear_error(self):
         with self.assertRaisesRegex(RuntimeError, "ANTHROPIC_API_KEY"):
             make_llm_client_from_env({"LLM_PROVIDER": "anthropic"}, poster=lambda *a: {})
+
+    def test_modal_alias_and_no_key_sends_no_auth_header(self):
+        captured = {}
+
+        def poster(url, headers, body):
+            captured.update(url=url, headers=headers)
+            return {"choices": [{"message": {"content": "{}"}}]}
+
+        for alias in ("modal", "modal.com"):
+            c = make_llm_client_from_env(
+                {"LLM_PROVIDER": alias, "LLM_BASE_URL": "https://w--app.us-east.modal.direct/v1",
+                 "LLM_MODEL": "m"}, poster=poster)
+            c("x")
+        self.assertEqual(captured["url"],
+                         "https://w--app.us-east.modal.direct/v1/chat/completions")
+        self.assertEqual(captured["headers"].get("Content-Type"), "application/json")
+        self.assertNotIn("Authorization", captured["headers"])
+
+    def test_openai_with_key_sends_bearer(self):
+        captured = {}
+
+        def poster(url, headers, body):
+            captured.update(headers=headers)
+            return {"choices": [{"message": {"content": "{}"}}]}
+
+        c = make_llm_client_from_env(
+            {"LLM_PROVIDER": "openai", "LLM_API_KEY": "k9",
+             "LLM_BASE_URL": "https://h/v1", "LLM_MODEL": "m"}, poster=poster)
+        c("x")
+        self.assertEqual(captured["headers"]["Authorization"], "Bearer k9")
+
+    def test_fireworks_alias_uses_public_default_base(self):
+        captured = {}
+
+        def poster(url, headers, body):
+            captured.update(url=url, headers=headers)
+            return {"choices": [{"message": {"content": "{}"}}]}
+
+        c = make_llm_client_from_env(
+            {"LLM_PROVIDER": "fireworks", "LLM_API_KEY": "k", "LLM_MODEL": "m"},
+            poster=poster)
+        c("x")
+        self.assertEqual(captured["url"],
+                         "https://api.fireworks.ai/inference/v1/chat/completions")
+        self.assertEqual(captured["headers"]["Authorization"], "Bearer k")
+
+    def test_base_url_without_v1_is_auto_corrected(self):
+        captured = {}
+
+        def poster(url, headers, body):
+            captured["url"] = url
+            return {"choices": [{"message": {"content": "{}"}}]}
+
+        c = make_llm_client_from_env(
+            {"LLM_PROVIDER": "modal", "LLM_MODEL": "m",
+             "LLM_BASE_URL": "https://w--app.us-east.modal.direct"},  # no /v1 suffix
+            poster=poster)
+        c("x")
+        self.assertEqual(captured["url"],
+                         "https://w--app.us-east.modal.direct/v1/chat/completions")
+
+    def test_unknown_provider_still_raises_clear_error(self):
+        with self.assertRaisesRegex(RuntimeError, "unknown LLM_PROVIDER"):
+            make_llm_client_from_env({"LLM_PROVIDER": "wat"}, poster=lambda *a: {})
 
 
 class TestFirecrawlScraper(unittest.TestCase):
