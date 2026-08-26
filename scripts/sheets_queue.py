@@ -27,6 +27,8 @@ from scripts.csv_to_geojson import SCHEMA
 from scripts.env import load_dotenv
 
 SHEETS_SCOPE = "https://www.googleapis.com/auth/spreadsheets"
+# Public endpoint home (one place only). If Google moves it, we change it HERE.
+SHEETS_API_BASE = "https://sheets.googleapis.com/v4/spreadsheets"
 
 
 def row_from_extraction(extraction, today, source_url=None):
@@ -44,7 +46,7 @@ def row_from_extraction(extraction, today, source_url=None):
 
 def sheet_api_url(sheet_id, tab):
     quoted = urllib.parse.quote(tab, safe="")
-    return (f"https://sheets.googleapis.com/v4/spreadsheets/{sheet_id}"
+    return (f"{SHEETS_API_BASE}/{sheet_id}"
             f"/values/{quoted}:append?valueInputOption=RAW&insertDataOption=INSERT_ROWS")
 
 
