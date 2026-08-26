@@ -40,3 +40,11 @@ Thumbs.db
 
 # --- Logs ---
 *.log
+
+# --- Pipeline operational state + article bodies: LOCAL ONLY ---
+# Machine-local memory + downloaded article HTML/PDFs don't belong in VCS
+# (volatility, size, and news-content redistribution hygiene).
+data/raw/articles/
+data/raw/page-state.json
+data/raw/download-state.json
+data/raw/pipeline.log
