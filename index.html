@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Malaysia Data Center Map</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <style>
+    html, body, #map { height: 100%; margin: 0; }
+    .note {
+      position: absolute; top: 10px; right: 10px; z-index: 1000;
+      background: rgba(255, 255, 255, .92); padding: 8px 12px;
+      border-radius: 6px; font: 13px/1.4 system-ui, sans-serif;
+      max-width: 260px; box-shadow: 0 1px 4px rgba(0,0,0,.3);
+    }
+    .legend-line { display: flex; align-items: center; gap: 6px; }
+    .dot { border-radius: 50%; display: inline-block; }
+    .dot-confirmed { width: 14px; height: 14px; background: #e6550d; }
+    .dot-estimated { width: 11px; height: 11px; background: #fdae6b; }
+    .dot-unknown { width: 8px; height: 8px; background: #777; }
+    .popup-type { font-size: 11px; text-transform: uppercase; letter-spacing: .04em; color: #555; }
+  </style>
+</head>
+<body>
+  <div id="map"></div>
+  <div class="note">
+    <strong>Malaysia Data Center Map</strong> (early build)<br>
+    Marker size &amp; warmth = power (MW).
+    <div class="legend-line"><span class="dot dot-confirmed"></span> confirmed MW</div>
+    <div class="legend-line"><span class="dot dot-estimated"></span> estimated MW</div>
+    <div class="legend-line"><span class="dot dot-unknown"></span> MW unknown</div>
+    Data shown includes unreviewed entries.
+  </div>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script>
+    const map = L.map('map');
+
+    // Spec §14: OSM attribution is a license condition, not optional.
+    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 19,
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors (ODbL)'
+    }).addTo(map);
+
+    function markerStyle(p) {
+      const mw = p.capacity_mw;
+      if (mw == null) {
+        return { radius: 4, color: '#555', fillColor: '#777', fillOpacity: 0.7, weight: 1 };
+      }
+      const radius = Math.min(5 + Math.sqrt(mw) * 1.2, 28);
+      const confirmed = p.capacity_type === 'confirmed';
+      return {
+        radius,
+        color: confirmed ? '#a63603' : '#b36b00',
+        fillColor: confirmed ? '#e6550d' : '#fdae6b',
+        fillOpacity: 0.75,
+        weight: 1.5
+      };
+    }
+
+    function escapeHtml(s) {
+      return String(s).replace(/[&<>"']/g, c =>
+        ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+    }
+
+    function popupHtml(p) {
+      const rows = [];
+      const add = (label, value) => {
+        if (value !== '' && value != null) rows.push(`<b>${label}:</b> ${escapeHtml(value)}`);
+      };
+      const mw = p.capacity_mw != null
+        ? `${p.capacity_mw} MW (${p.capacity_type || 'unlabeled'})`
+        : 'unknown';
+      rows.push(`<span class="popup-type">${escapeHtml(p.verification_status || 'unverified')}</span>`);
+      rows.push(`<h3 style="margin:4px 0">${escapeHtml(p.name || '(unnamed facility)')}</h3>`);
+      add('Operator', p.operator);
+      add('Address', p.address);
+      rows.push(`<b>Power:</b> ${escapeHtml(mw)}`);
+      add('Status', p.status);
+      add('Source', p.capacity_source);
+      add('Last updated', p.last_updated);
+      return rows.join('<br>');
+    }
+
+    fetch('data/datacenters.geojson')
+      .then(r => {
+        if (!r.ok) throw new Error('GeoJSON load failed: HTTP ' + r.status);
+        return r.json();
+      })
+      .then(doc => {
+        const layer = L.geoJSON(doc, {
+          pointToLayer: (feature, latlng) =>
+            L.circleMarker(latlng, markerStyle(feature.properties)),
+          onEachFeature: (feature, layer) =>
+            layer.bindPopup(popupHtml(feature.properties))
+        }).addTo(map);
+        if (layer.getLayers().length > 0) {
+          map.fitBounds(layer.getBounds().pad(0.15));
+        } else {
+          map.setView([4.2, 102.0], 6); // Malaysia fallback
+        }
+      })
+      .catch(err => {
+        map.setView([4.2, 102.0], 6);
+        console.error(err);
+        document.querySelector('.note').innerHTML =
+          '<strong>Data failed to load.</strong><br>' + escapeHtml(err.message) +
+          '<br>Serve the repo root over HTTP (e.g. <code>python3 -m http.server</code>) instead of opening the file directly.';
+      });
+  </script>
+</body>
+</html>
