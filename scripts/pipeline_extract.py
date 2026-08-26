@@ -1,16 +1,14 @@
 """Extract stage (spec §8, stage 3): pull structured data-center facts out of
-article text with an LLM — provider-agnostic (spec: "Claude API **or another
-LLM API**").
+article text with an LLM.
 
-Supported providers, selected via env (`.env` locally, Actions secrets in CI):
+Extraction-domain logic lives HERE (prompt wording, §5 schema validation,
+provenance, dedupe, scraping). LLM *provider* logic lives in scripts/llm/:
+- providers.py  — declarative registry of all providers + aliases
+- clients.py    — the two API dialects (Anthropic messages / OpenAI chat)
+- parsing.py    — tolerant JSON-object extraction
 
-    anthropic   Anthropic Messages API      (ANTHROPIC_API_KEY, CLAUDE_MODEL?)
-    deepseek    DeepSeek (OpenAI-compat)    (LLM_API_KEY, LLM_MODEL=deepseek-chat)
-    openai      Any OpenAI-compatible API   (LLM_API_KEY, LLM_BASE_URL, LLM_MODEL)
-                — incl. Modal-hosted models, Groq, Together, OpenRouter…
-
-Scraping (article → clean text) is a separate seam: local `html_to_text` by
-default, or Firecrawl (`FC_API_KEY`) for JS-heavy pages.
+Provider config is env-driven (.env / secrets); no provider is hardcoded
+into control flow anywhere.
 
 Every fact row carries its source URL + extraction date (spec); rows failing
 the spec §5 schema are dropped with a reason; texts with no relevant facts
@@ -21,18 +19,15 @@ import glob
 import json
 import os
 import re
-import urllib.request
 from datetime import date
 from html.parser import HTMLParser
 
 from scripts.csv_to_geojson import SCHEMA
 from scripts.env import load_dotenv
+from scripts.llm import make_llm_client_from_env  # provider factory (scripts/llm)
+from scripts.llm.clients import post_json
 
-ANTHROPIC_MESSAGES_URL = "https://api.anthropic.com/v1/messages"
-DEEPSEEK_BASE_URL = "https://api.deepseek.com"
-FIREWORKS_BASE_URL = "https://api.fireworks.ai/inference/v1"
 FIRECRAWL_SCRAPE_URL = "https://api.firecrawl.dev/v1/scrape"
-DEFAULT_CLAUDE_MODEL = os.environ.get("CLAUDE_MODEL", "claude-haiku-4-5-20251001")
 MAX_ARTICLE_CHARS = 12_000          # keep prompts cheap; big articles truncate
 STATUS_VALUES = {"", "operating", "under construction", "planned"}
 CAPACITY_TYPES = {"", "confirmed", "estimated"}
@@ -65,14 +60,7 @@ def html_to_text(html):
     return " ".join("".join(p.parts).split())
 
 
-def _post_json(url, headers, body):
-    req = urllib.request.Request(url, data=json.dumps(body).encode("utf-8"),
-                                 headers=headers)
-    with urllib.request.urlopen(req, timeout=60) as r:
-        return json.load(r)
-
-
-def make_firecrawl_scraper(api_key, poster=_post_json):
+def make_firecrawl_scraper(api_key, poster=post_json):
     """Firecrawl /scrape as a scraper: url -> clean markdown text (None on fail)."""
     def scrape(url):
         resp = poster(FIRECRAWL_SCRAPE_URL,
@@ -99,93 +87,6 @@ ARTICLE:
 """ + article_text[:MAX_ARTICLE_CHARS])
 
 
-def extract_json_object(text):
-    """First JSON object in text (tolerates ```json fences, prose padding)."""
-    if not text:
-        return None
-    m = re.search(r"```(?:json)?\s*(\{.*?\})\s*```", text, re.S)
-    candidate = m.group(1) if m else None
-    if candidate is None:
-        start, end = text.find("{"), text.rfind("}")
-        if start == -1 or end <= start:
-            return None
-        candidate = text[start:end + 1]
-    try:
-        return json.loads(candidate)
-    except json.JSONDecodeError:
-        return None
-
-
-def make_anthropic_client(api_key, model=DEFAULT_CLAUDE_MODEL, poster=_post_json):
-    def call(article_text):
-        resp = poster(
-            ANTHROPIC_MESSAGES_URL,
-            {"x-api-key": api_key, "anthropic-version": "2023-06-01",
-             "Content-Type": "application/json"},
-            {"model": model, "max_tokens": 512,
-             "messages": [{"role": "user", "content": build_prompt(article_text)}]})
-        text = "".join(b.get("text", "") for b in resp.get("content", []))
-        return extract_json_object(text)
-    return call
-
-
-def make_openai_compatible_client(base_url, api_key, model, poster=_post_json):
-    """Any OpenAI-compatible /chat/completions API (Modal, Fireworks, DeepSeek,
-    Groq, Together, OpenRouter…). Auth header is omitted when api_key is empty
-    (many self-hosted/Modal endpoints are unauthenticated). A missing "/v1"
-    suffix on base_url is auto-corrected — the #1 config fumble."""
-    base = base_url.rstrip("/")
-    if not re.search(r"/v\d+$", base):
-        base += "/v1"
-
-    def call(article_text):
-        headers = {"Content-Type": "application/json"}
-        if api_key:
-            headers["Authorization"] = f"Bearer {api_key}"
-        resp = poster(
-            f"{base}/chat/completions", headers,
-            {"model": model, "max_tokens": 512,
-             "messages": [{"role": "user", "content": build_prompt(article_text)}]})
-        text = resp.get("choices", [{}])[0].get("message", {}).get("content", "")
-        return extract_json_object(text)
-    return call
-
-
-def make_llm_client_from_env(env, poster=_post_json):
-    """Provider factory. Provider VALUES are env/config-driven, not hardcoded:
-
-    anthropic | deepseek | fireworks[.ai] | openai | openai_compatible |
-    modal | modal.com   (last two = OpenAI-compatible aliases)
-    """
-    provider = (env.get("LLM_PROVIDER") or "anthropic").lower().strip()
-    if provider == "anthropic":
-        key = env.get("ANTHROPIC_API_KEY")
-        if not key:
-            raise RuntimeError("LLM_PROVIDER=anthropic requires ANTHROPIC_API_KEY")
-        return make_anthropic_client(key, env.get("CLAUDE_MODEL", DEFAULT_CLAUDE_MODEL), poster)
-
-    if provider == "deepseek":
-        if not env.get("LLM_API_KEY"):
-            raise RuntimeError("LLM_PROVIDER=deepseek requires LLM_API_KEY")
-        return make_openai_compatible_client(
-            DEEPSEEK_BASE_URL, env["LLM_API_KEY"], env.get("LLM_MODEL", "deepseek-chat"), poster)
-
-    if provider in ("fireworks", "fireworks.ai"):
-        base = env.get("LLM_BASE_URL") or FIREWORKS_BASE_URL
-        return make_openai_compatible_client(
-            base, env.get("LLM_API_KEY"), env.get("LLM_MODEL"), poster)
-
-    if provider in ("openai", "openai_compatible", "modal", "modal.com"):
-        base = env.get("LLM_BASE_URL")
-        if not base:
-            raise RuntimeError(f"LLM_PROVIDER={provider} requires LLM_BASE_URL")
-        if not env.get("LLM_MODEL"):
-            raise RuntimeError(f"LLM_PROVIDER={provider} requires LLM_MODEL")
-        # key optional: Modal/self-hosted endpoints are often unauthenticated
-        return make_openai_compatible_client(
-            base, env.get("LLM_API_KEY"), env["LLM_MODEL"], poster)
-
-    raise RuntimeError(f"unknown LLM_PROVIDER: {provider}")
 
 # ------------------------------------------------------------- orchestration --
 
@@ -213,7 +114,7 @@ def extract_article(article_text, source_url, llm_client, today):
     """One article -> (row | None, reason). Schema rows only, with provenance."""
     if not article_text or not article_text.strip():
         return None, "empty article"
-    parsed = llm_client(article_text)
+    parsed = llm_client(build_prompt(article_text))
     if not isinstance(parsed, dict):
         return None, "model returned no JSON"
     if not parsed.get("found"):
