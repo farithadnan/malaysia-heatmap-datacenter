@@ -18,6 +18,11 @@
     .dot-confirmed { width: 14px; height: 14px; background: #e6550d; }
     .dot-estimated { width: 11px; height: 11px; background: #fdae6b; }
     .dot-unknown { width: 8px; height: 8px; background: #777; }
+    .ring { width: 12px; height: 12px; border-radius: 50%; display: inline-block;
+            background: transparent; border: 2px solid; }
+    .ring-operating { border-color: #1a7a36; }
+    .ring-construction { border-color: #c98a00; border-style: dashed; }
+    .ring-planned { border-color: #999; opacity: .6; }
     .popup-type { font-size: 11px; text-transform: uppercase; letter-spacing: .04em; color: #555; }
   </style>
 </head>
@@ -25,11 +30,23 @@
   <div id="map"></div>
   <div class="note">
     <strong>Malaysia Data Center Map</strong> (early build)<br>
-    Marker size &amp; warmth = power (MW).
+    <input id="search" type="search" placeholder="Search name/operator…"
+           style="width:100%;box-sizing:border-box;margin:6px 0 4px;padding:3px 6px">
+    <select id="status-filter" style="width:100%;margin-bottom:6px">
+      <option value="">All statuses</option>
+      <option value="operating">operating</option>
+      <option value="under construction">under construction</option>
+      <option value="planned">planned</option>
+    </select><br>
+    Marker size = power (MW). Fill: warmth/confirmation.
     <div class="legend-line"><span class="dot dot-confirmed"></span> confirmed MW</div>
     <div class="legend-line"><span class="dot dot-estimated"></span> estimated MW</div>
     <div class="legend-line"><span class="dot dot-unknown"></span> MW unknown</div>
-    Data shown includes unreviewed entries.
+    Border: status.
+    <div class="legend-line"><span class="ring ring-operating"></span> operating</div>
+    <div class="legend-line"><span class="ring ring-construction"></span> under construction</div>
+    <div class="legend-line"><span class="ring ring-planned"></span> planned</div>
+    <span id="count"></span>
   </div>
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script>
@@ -43,19 +60,79 @@
 
     function markerStyle(p) {
       const mw = p.capacity_mw;
+      let style;
       if (mw == null) {
-        return { radius: 4, color: '#555', fillColor: '#777', fillOpacity: 0.7, weight: 1 };
+        style = { radius: 4, fillColor: '#777', fillOpacity: 0.7 };
+      } else {
+        const confirmed = p.capacity_type === 'confirmed';
+        style = {
+          radius: Math.min(5 + Math.sqrt(mw) * 1.2, 28),
+          fillColor: confirmed ? '#e6550d' : '#fdae6b',
+          fillOpacity: 0.75
+        };
       }
-      const radius = Math.min(5 + Math.sqrt(mw) * 1.2, 28);
-      const confirmed = p.capacity_type === 'confirmed';
-      return {
-        radius,
-        color: confirmed ? '#a63603' : '#b36b00',
-        fillColor: confirmed ? '#e6550d' : '#fdae6b',
-        fillOpacity: 0.75,
-        weight: 1.5
-      };
+      // Border encodes status (Issue #22): solid ring operating,
+      // dashed amber under construction, faded gray planned, thin otherwise.
+      if (p.status === 'operating') {
+        style.color = '#1a7a36'; style.weight = 2.5; style.dashArray = null;
+      } else if (p.status === 'under construction') {
+        style.color = '#c98a00'; style.weight = 2; style.dashArray = '4 3';
+      } else if (p.status === 'planned') {
+        style.color = '#999'; style.weight = 1.5; style.fillOpacity = 0.35; style.dashArray = null;
+      } else {
+        style.color = '#555'; style.weight = 1; style.dashArray = null;
+      }
+      return style;
     }
+
+    fetch('data/datacenters.geojson')
+      .then(r => {
+        if (!r.ok) throw new Error('GeoJSON load failed: HTTP ' + r.status);
+        return r.json();
+      })
+      .then(doc => {
+        const markers = L.geoJSON(doc, {
+          pointToLayer: (feature, latlng) =>
+            L.circleMarker(latlng, markerStyle(feature.properties))
+              .bindPopup(popupHtml(feature.properties))
+        });
+        const active = L.layerGroup().addTo(map);
+        const searchEl = document.getElementById('search');
+        const statusEl = document.getElementById('status-filter');
+        const countEl = document.getElementById('count');
+
+        function matches(props) {
+          const q = searchEl.value.trim().toLowerCase();
+          if (q && !((props.name || '') + ' ' + (props.operator || '')).toLowerCase().includes(q))
+            return false;
+          return !(statusEl.value && props.status !== statusEl.value);
+        }
+
+        function render() {
+          active.clearLayers();
+          let shown = 0;
+          markers.eachLayer(m => {
+            if (matches(m.feature.properties)) { active.addLayer(m); shown++; }
+          });
+          countEl.textContent = `${shown} of ${markers.getLayers().length} shown`;
+        }
+
+        searchEl.addEventListener('input', render);
+        statusEl.addEventListener('change', render);
+        render();
+        if (markers.getLayers().length > 0) {
+          map.fitBounds(markers.getBounds().pad(0.15));
+        } else {
+          map.setView([4.2, 102.0], 6); // Malaysia fallback
+        }
+      })
+      .catch(err => {
+        map.setView([4.2, 102.0], 6);
+        console.error(err);
+        document.querySelector('.note').innerHTML =
+          '<strong>Data failed to load.</strong><br>' + escapeHtml(err.message) +
+          '<br>Serve the repo root over HTTP (e.g. <code>python3 -m http.server</code>) instead of opening the file directly.';
+      });
 
     function escapeHtml(s) {
       return String(s).replace(/[&<>"']/g, c =>
@@ -78,34 +155,32 @@
       add('Status', p.status);
       add('Source', p.capacity_source);
       add('Last updated', p.last_updated);
+      rows.push(reportLink(p));
       return rows.join('<br>');
     }
 
-    fetch('data/datacenters.geojson')
-      .then(r => {
-        if (!r.ok) throw new Error('GeoJSON load failed: HTTP ' + r.status);
-        return r.json();
-      })
-      .then(doc => {
-        const layer = L.geoJSON(doc, {
-          pointToLayer: (feature, latlng) =>
-            L.circleMarker(latlng, markerStyle(feature.properties)),
-          onEachFeature: (feature, layer) =>
-            layer.bindPopup(popupHtml(feature.properties))
-        }).addTo(map);
-        if (layer.getLayers().length > 0) {
-          map.fitBounds(layer.getBounds().pad(0.15));
-        } else {
-          map.setView([4.2, 102.0], 6); // Malaysia fallback
-        }
-      })
-      .catch(err => {
-        map.setView([4.2, 102.0], 6);
-        console.error(err);
-        document.querySelector('.note').innerHTML =
-          '<strong>Data failed to load.</strong><br>' + escapeHtml(err.message) +
-          '<br>Serve the repo root over HTTP (e.g. <code>python3 -m http.server</code>) instead of opening the file directly.';
-      });
+    // Phase 6 (Issue #19): one click pre-fills a correction issue with the
+    // facility's current values, so the reporter only describes what's wrong.
+    function reportLink(p) {
+      const name = p.name || '(unnamed facility)';
+      const title = `Correction: ${name}`;
+      const body = [
+        `**Facility name:** ${name}`, '',
+        '**Current row on the map:**',
+        `- operator: ${p.operator || ''}`,
+        `- address: ${p.address || ''}`,
+        `- capacity: ${p.capacity_mw != null ? p.capacity_mw + ' MW (' + (p.capacity_type || '') + ')' : 'unknown'}`,
+        `- status: ${p.status || ''}`, '',
+        "**What's wrong?**", '',
+        '**Source for the correction (required):**', '',
+        '**Suggested fix:**', '',
+      ].join('\n');
+      const url = 'https://github.com/farithadnan/malaysia-heatmap-datacenter/issues/new'
+        + '?title=' + encodeURIComponent(title)
+        + '&body=' + encodeURIComponent(body)
+        + '&labels=data-correction';
+      return `<a href="${url}" target="_blank" rel="noopener">Report an issue</a>`;
+    }
   </script>
 </body>
 </html>
