@@ -2,6 +2,8 @@
 
 A free, open-source, community-checked map showing where data centers are in Malaysia, and roughly how much power (MW) each one uses. Think of it as a DIY, Malaysia-only alternative to paid tools like Baxtel — smaller in scope, verifiable, and open.
 
+**Live map:** https://farithadnan.github.io/malaysia-heatmap-datacenter/
+
 > Current status: **early build** — static map live, the four pipeline stages (Watch/Fetch/Extract/Queue) are implemented and individually verified; full end-to-end automation is the active work.
 
 ## What's in this repo
@@ -64,4 +66,18 @@ Core rules: free public sources only, every number cites its source, estimates a
 
 ## License
 
-Not yet decided — see spec §11 (MIT for code, ODbL compatibility check required for OSM-derived data).
+- **Code:** [MIT](LICENSE)
+- **Data:** [ODbL 1.0](LICENSE-DATA.md) — this project uses OpenStreetMap data (© OpenStreetMap contributors), so the dataset follows its share-alike terms. When reusing the data, credit: `Data © OpenStreetMap contributors (ODbL 1.0), Malaysia Data Center Map project`.
+
+## Data sources & limitations (read before citing)
+
+- Figures are **research data, not live telemetry.** Every power number is either `confirmed` (from an official source) or `estimated`, and every row carries its `capacity_source` — never present an estimate as a fact.
+- Sources: OpenStreetMap (Overpass), free public directory listings, company/government press releases, automated news/RSS monitoring (pending-review). No paywalled or login-gated data is used, ever.
+- **Update cadence:** the map refreshes when the dataset updates — currently periodic, at data-center-industry pace (facilities take years to build). `last_updated` per row shows freshness; the repo's commit history is the audit trail.
+- Coordinates for some facilities await geocoding/verification — those stay `needs review` and are not shown as final.
+
+## Suggest a fix
+
+Spotted a wrong or outdated entry? Open a [GitHub Issue](../../issues) with the facility name and a source — see [`CONTRIBUTING.md`](CONTRIBUTING.md). Every report goes through human verification; nothing reaches the map unreviewed.
+
+Input welcome: corrections, new facilities with sources, better code, better maps.
