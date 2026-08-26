@@ -10,6 +10,7 @@ pip-wheel-metadata/
 # Secrets / credentials (Google Sheets API key, LLM API key)
 .env
 .env.*
+!.env.example
 *.pem
 *-key.json
 credentials*.json
