@@ -64,8 +64,8 @@ def make_transport(service_account_info=None):
         from google.oauth2 import service_account
     except ImportError as e:
         raise RuntimeError(
-            "google-auth is required for real Sheets writes; it is installed "
-            "in GitHub Actions via requirements.txt") from e
+            "queue transport needs google-auth + requests in an env with them "
+            "installed (local: .venv per README; Actions: requirements.txt)") from e
 
     if service_account_info is None:
         load_dotenv()  # local dev fallback; Actions injects env vars directly
