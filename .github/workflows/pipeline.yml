@@ -1,0 +1,35 @@
+# Watch-stage pipeline: weekly automated source sweep (spec §8, Issue #14).
+# Fully stdlib — no secrets or services required. Extract/Queue stages
+# (Issues #12/#13) will need API secrets later; do NOT hardcode them here.
+name: data-watch
+
+on:
+  schedule:
+    - cron: "0 1 * * 1"   # every Monday 01:00 UTC (09:00 MYT)
+  workflow_dispatch:        # manual trigger for testing
+
+permissions:
+  contents: read
+
+jobs:
+  watch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Run unit tests
+        run: python3 -m unittest discover -s tests
+
+      - name: Run watch sweep (RSS + page snapshots)
+        run: python3 scripts/pipeline_watch.py --config data/sources.json --out "data/raw/watch-$(date +%F).json" --state data/raw/page-state.json
+
+      - name: Upload findings artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: watch-findings
+          path: data/raw/watch-*.json
+          retention-days: 90
