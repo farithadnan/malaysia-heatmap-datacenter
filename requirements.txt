@@ -1,0 +1,6 @@
+# Optional runtime dependencies for the automation pipeline (spec §8/§9).
+# Local dev and all unit tests stay stdlib-only; these are needed only by
+# the GitHub Actions pipeline stages that talk to external services.
+#
+# Issue #13 (Queue): Google Sheets API service-account auth
+google-auth>=2.29.0
