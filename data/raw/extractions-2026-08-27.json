@@ -1,0 +1,1127 @@
+{
+  "date": "2026-08-27",
+  "rows": [],
+  "skipped": [
+    {
+      "digest": "00e442bbe163",
+      "reason": "empty article"
+    },
+    {
+      "digest": "02f7ca47944b",
+      "reason": "empty article"
+    },
+    {
+      "digest": "0338610a3f30",
+      "reason": "empty article"
+    },
+    {
+      "digest": "044c2ecca677",
+      "reason": "empty article"
+    },
+    {
+      "digest": "0666ba21bc6a",
+      "reason": "empty article"
+    },
+    {
+      "digest": "07f9917bce0d",
+      "reason": "empty article"
+    },
+    {
+      "digest": "084203b5ab80",
+      "reason": "empty article"
+    },
+    {
+      "digest": "09d268b7df78",
+      "reason": "empty article"
+    },
+    {
+      "digest": "0a03dbc1f232",
+      "reason": "empty article"
+    },
+    {
+      "digest": "0a66beee1bbb",
+      "reason": "empty article"
+    },
+    {
+      "digest": "0ab7d491eeb2",
+      "reason": "empty article"
+    },
+    {
+      "digest": "0ac18cf3913d",
+      "reason": "empty article"
+    },
+    {
+      "digest": "0bba6bbfedc6",
+      "reason": "empty article"
+    },
+    {
+      "digest": "0cfcdbc7fc8d",
+      "reason": "empty article"
+    },
+    {
+      "digest": "0e95a21b3e66",
+      "reason": "empty article"
+    },
+    {
+      "digest": "1090fffed322",
+      "reason": "empty article"
+    },
+    {
+      "digest": "1114c5596093",
+      "reason": "empty article"
+    },
+    {
+      "digest": "11b8dd07b833",
+      "reason": "empty article"
+    },
+    {
+      "digest": "11d20219b08b",
+      "reason": "no facts found"
+    },
+    {
+      "digest": "1350f430be9d",
+      "reason": "empty article"
+    },
+    {
+      "digest": "140fe00fff9d",
+      "reason": "empty article"
+    },
+    {
+      "digest": "145c74325a83",
+      "reason": "empty article"
+    },
+    {
+      "digest": "153048679cab",
+      "reason": "empty article"
+    },
+    {
+      "digest": "17b15f7bcb2b",
+      "reason": "empty article"
+    },
+    {
+      "digest": "1af9fb9da8ec",
+      "reason": "empty article"
+    },
+    {
+      "digest": "1b3b72b0fd30",
+      "reason": "empty article"
+    },
+    {
+      "digest": "1d53cc81cfd0",
+      "reason": "empty article"
+    },
+    {
+      "digest": "1dcc011ab04d",
+      "reason": "empty article"
+    },
+    {
+      "digest": "1ee1e31030c1",
+      "reason": "empty article"
+    },
+    {
+      "digest": "1f04b0f7f8a7",
+      "reason": "empty article"
+    },
+    {
+      "digest": "20b1f3220c30",
+      "reason": "empty article"
+    },
+    {
+      "digest": "2166b6be138e",
+      "reason": "empty article"
+    },
+    {
+      "digest": "22623b671dda",
+      "reason": "empty article"
+    },
+    {
+      "digest": "23176f39dd45",
+      "reason": "empty article"
+    },
+    {
+      "digest": "23276796472f",
+      "reason": "empty article"
+    },
+    {
+      "digest": "24a60c43b5bd",
+      "reason": "empty article"
+    },
+    {
+      "digest": "2518389994f6",
+      "reason": "empty article"
+    },
+    {
+      "digest": "257a00bf5035",
+      "reason": "empty article"
+    },
+    {
+      "digest": "28917eb5cf99",
+      "reason": "empty article"
+    },
+    {
+      "digest": "29ae77b9c272",
+      "reason": "empty article"
+    },
+    {
+      "digest": "29d282bd4e6e",
+      "reason": "empty article"
+    },
+    {
+      "digest": "29d479d2c129",
+      "reason": "empty article"
+    },
+    {
+      "digest": "29dcc24c80ff",
+      "reason": "empty article"
+    },
+    {
+      "digest": "2ac5dfb4fe14",
+      "reason": "empty article"
+    },
+    {
+      "digest": "2b4a654156a5",
+      "reason": "empty article"
+    },
+    {
+      "digest": "2b62a8956918",
+      "reason": "empty article"
+    },
+    {
+      "digest": "2bb7c9b6c3b1",
+      "reason": "empty article"
+    },
+    {
+      "digest": "2c2b15cde9ba",
+      "reason": "empty article"
+    },
+    {
+      "digest": "2e1dd69856ca",
+      "reason": "empty article"
+    },
+    {
+      "digest": "2ef057c97a82",
+      "reason": "empty article"
+    },
+    {
+      "digest": "3090b6f96599",
+      "reason": "empty article"
+    },
+    {
+      "digest": "311cc3042cb2",
+      "reason": "empty article"
+    },
+    {
+      "digest": "31284de93c94",
+      "reason": "empty article"
+    },
+    {
+      "digest": "31364116851a",
+      "reason": "empty article"
+    },
+    {
+      "digest": "32393f857e6f",
+      "reason": "empty article"
+    },
+    {
+      "digest": "33caa427b597",
+      "reason": "empty article"
+    },
+    {
+      "digest": "3453d3ecca50",
+      "reason": "empty article"
+    },
+    {
+      "digest": "35974ee2f4b2",
+      "reason": "empty article"
+    },
+    {
+      "digest": "363412b70c18",
+      "reason": "empty article"
+    },
+    {
+      "digest": "37a5b10a45bb",
+      "reason": "empty article"
+    },
+    {
+      "digest": "37e25f6fd9dd",
+      "reason": "empty article"
+    },
+    {
+      "digest": "38280fec162e",
+      "reason": "empty article"
+    },
+    {
+      "digest": "39b835f44ed7",
+      "reason": "empty article"
+    },
+    {
+      "digest": "3ad923e18c76",
+      "reason": "empty article"
+    },
+    {
+      "digest": "3b54d1cb594d",
+      "reason": "empty article"
+    },
+    {
+      "digest": "3bbce89fbb33",
+      "reason": "empty article"
+    },
+    {
+      "digest": "3bd9b85182e5",
+      "reason": "empty article"
+    },
+    {
+      "digest": "3beecf89b93a",
+      "reason": "empty article"
+    },
+    {
+      "digest": "3ce0aa6e23df",
+      "reason": "empty article"
+    },
+    {
+      "digest": "3d274f666929",
+      "reason": "empty article"
+    },
+    {
+      "digest": "3d7b6c889309",
+      "reason": "empty article"
+    },
+    {
+      "digest": "3e2ecba9b90d",
+      "reason": "empty article"
+    },
+    {
+      "digest": "403a4c1dd45c",
+      "reason": "empty article"
+    },
+    {
+      "digest": "412fdf6d2528",
+      "reason": "empty article"
+    },
+    {
+      "digest": "4163a71247ce",
+      "reason": "empty article"
+    },
+    {
+      "digest": "41977f20b4e2",
+      "reason": "empty article"
+    },
+    {
+      "digest": "434566c6b328",
+      "reason": "empty article"
+    },
+    {
+      "digest": "43a6e6c64472",
+      "reason": "empty article"
+    },
+    {
+      "digest": "451bf8c54644",
+      "reason": "empty article"
+    },
+    {
+      "digest": "464225367db9",
+      "reason": "empty article"
+    },
+    {
+      "digest": "4740f74a86ff",
+      "reason": "empty article"
+    },
+    {
+      "digest": "47c5010587f0",
+      "reason": "empty article"
+    },
+    {
+      "digest": "481eb43cf5ac",
+      "reason": "empty article"
+    },
+    {
+      "digest": "489a2d1c1209",
+      "reason": "empty article"
+    },
+    {
+      "digest": "4bb42f37d397",
+      "reason": "empty article"
+    },
+    {
+      "digest": "4c2e2f961019",
+      "reason": "empty article"
+    },
+    {
+      "digest": "4d3df466023d",
+      "reason": "empty article"
+    },
+    {
+      "digest": "4d57a1ae2cb3",
+      "reason": "empty article"
+    },
+    {
+      "digest": "4d6a9fbc2737",
+      "reason": "empty article"
+    },
+    {
+      "digest": "4d6b2f85f6aa",
+      "reason": "empty article"
+    },
+    {
+      "digest": "4dcd03a9f3cd",
+      "reason": "empty article"
+    },
+    {
+      "digest": "4eb84a0012e5",
+      "reason": "empty article"
+    },
+    {
+      "digest": "50ad4cc10046",
+      "reason": "empty article"
+    },
+    {
+      "digest": "5207977132b4",
+      "reason": "empty article"
+    },
+    {
+      "digest": "521f762cfaf5",
+      "reason": "empty article"
+    },
+    {
+      "digest": "527828e3e291",
+      "reason": "empty article"
+    },
+    {
+      "digest": "529229879909",
+      "reason": "empty article"
+    },
+    {
+      "digest": "54e849f2e176",
+      "reason": "empty article"
+    },
+    {
+      "digest": "55a139cd3f1a",
+      "reason": "no facts found"
+    },
+    {
+      "digest": "55b89add2d13",
+      "reason": "empty article"
+    },
+    {
+      "digest": "55d4d18a3862",
+      "reason": "empty article"
+    },
+    {
+      "digest": "561b678d5a38",
+      "reason": "empty article"
+    },
+    {
+      "digest": "567f45cc4d77",
+      "reason": "empty article"
+    },
+    {
+      "digest": "56e498d4f4e3",
+      "reason": "empty article"
+    },
+    {
+      "digest": "57ffeeac62b2",
+      "reason": "empty article"
+    },
+    {
+      "digest": "58f0efe8e884",
+      "reason": "empty article"
+    },
+    {
+      "digest": "5a6e6d3d81fd",
+      "reason": "empty article"
+    },
+    {
+      "digest": "5b07b3d60790",
+      "reason": "empty article"
+    },
+    {
+      "digest": "5bb50323737b",
+      "reason": "empty article"
+    },
+    {
+      "digest": "5cbb836d2217",
+      "reason": "empty article"
+    },
+    {
+      "digest": "5ccb6293dd07",
+      "reason": "empty article"
+    },
+    {
+      "digest": "5e635357a8eb",
+      "reason": "empty article"
+    },
+    {
+      "digest": "5e640dd6ef85",
+      "reason": "empty article"
+    },
+    {
+      "digest": "5fb74d6ce4ef",
+      "reason": "empty article"
+    },
+    {
+      "digest": "6003d9f42039",
+      "reason": "empty article"
+    },
+    {
+      "digest": "602c6aeb0d7b",
+      "reason": "empty article"
+    },
+    {
+      "digest": "609781fb9efd",
+      "reason": "empty article"
+    },
+    {
+      "digest": "60cc2dd5c3da",
+      "reason": "empty article"
+    },
+    {
+      "digest": "629e885ef343",
+      "reason": "no facts found"
+    },
+    {
+      "digest": "6335eefc5b36",
+      "reason": "empty article"
+    },
+    {
+      "digest": "641c6f167541",
+      "reason": "empty article"
+    },
+    {
+      "digest": "694bad9a09e5",
+      "reason": "empty article"
+    },
+    {
+      "digest": "696858382c6b",
+      "reason": "empty article"
+    },
+    {
+      "digest": "6b024dc80493",
+      "reason": "empty article"
+    },
+    {
+      "digest": "6ba2129abae4",
+      "reason": "empty article"
+    },
+    {
+      "digest": "6c804343e567",
+      "reason": "empty article"
+    },
+    {
+      "digest": "6dfa0f6a2fc5",
+      "reason": "empty article"
+    },
+    {
+      "digest": "6e0eb236d0be",
+      "reason": "empty article"
+    },
+    {
+      "digest": "6e873e40fdc6",
+      "reason": "empty article"
+    },
+    {
+      "digest": "7106021af820",
+      "reason": "empty article"
+    },
+    {
+      "digest": "7164bb8505c3",
+      "reason": "empty article"
+    },
+    {
+      "digest": "72ecbf4a7463",
+      "reason": "empty article"
+    },
+    {
+      "digest": "734b158a52fb",
+      "reason": "empty article"
+    },
+    {
+      "digest": "7409ec8b6632",
+      "reason": "empty article"
+    },
+    {
+      "digest": "74705cbd2121",
+      "reason": "empty article"
+    },
+    {
+      "digest": "759f9a395a3c",
+      "reason": "empty article"
+    },
+    {
+      "digest": "78e880a4eabf",
+      "reason": "empty article"
+    },
+    {
+      "digest": "791b40c15fb8",
+      "reason": "empty article"
+    },
+    {
+      "digest": "79d6d4810957",
+      "reason": "empty article"
+    },
+    {
+      "digest": "7a377873f2f1",
+      "reason": "empty article"
+    },
+    {
+      "digest": "7a5474651249",
+      "reason": "empty article"
+    },
+    {
+      "digest": "7a7b96304436",
+      "reason": "empty article"
+    },
+    {
+      "digest": "7b3066de3f71",
+      "reason": "empty article"
+    },
+    {
+      "digest": "7e55e5be46ea",
+      "reason": "empty article"
+    },
+    {
+      "digest": "7f205be40d86",
+      "reason": "empty article"
+    },
+    {
+      "digest": "7fd714806894",
+      "reason": "empty article"
+    },
+    {
+      "digest": "816b79acf96a",
+      "reason": "empty article"
+    },
+    {
+      "digest": "822261cfbd71",
+      "reason": "empty article"
+    },
+    {
+      "digest": "82371256546c",
+      "reason": "empty article"
+    },
+    {
+      "digest": "847e6fefc3ec",
+      "reason": "no facts found"
+    },
+    {
+      "digest": "84ef6c393ecc",
+      "reason": "empty article"
+    },
+    {
+      "digest": "85fb192ed053",
+      "reason": "empty article"
+    },
+    {
+      "digest": "865334149191",
+      "reason": "empty article"
+    },
+    {
+      "digest": "8653e5d3e78d",
+      "reason": "empty article"
+    },
+    {
+      "digest": "8814ef89a6cc",
+      "reason": "empty article"
+    },
+    {
+      "digest": "894359ef130c",
+      "reason": "empty article"
+    },
+    {
+      "digest": "8a22319c6924",
+      "reason": "empty article"
+    },
+    {
+      "digest": "8b7c9c6daafd",
+      "reason": "empty article"
+    },
+    {
+      "digest": "8c30c081f932",
+      "reason": "empty article"
+    },
+    {
+      "digest": "8d72626e1d64",
+      "reason": "empty article"
+    },
+    {
+      "digest": "91365fed48f7",
+      "reason": "empty article"
+    },
+    {
+      "digest": "917cfd847d8a",
+      "reason": "empty article"
+    },
+    {
+      "digest": "91a1d36c170f",
+      "reason": "empty article"
+    },
+    {
+      "digest": "91df22f697ba",
+      "reason": "empty article"
+    },
+    {
+      "digest": "9229321165b0",
+      "reason": "empty article"
+    },
+    {
+      "digest": "92ff2b595476",
+      "reason": "empty article"
+    },
+    {
+      "digest": "9304b60dc361",
+      "reason": "empty article"
+    },
+    {
+      "digest": "93d280274229",
+      "reason": "empty article"
+    },
+    {
+      "digest": "942c1ff60ca2",
+      "reason": "empty article"
+    },
+    {
+      "digest": "97a5e589caa6",
+      "reason": "empty article"
+    },
+    {
+      "digest": "981cf54d5fd7",
+      "reason": "empty article"
+    },
+    {
+      "digest": "9b111df51e43",
+      "reason": "empty article"
+    },
+    {
+      "digest": "9b322cdd5f22",
+      "reason": "empty article"
+    },
+    {
+      "digest": "9baab14a62db",
+      "reason": "empty article"
+    },
+    {
+      "digest": "9bc4431543c2",
+      "reason": "empty article"
+    },
+    {
+      "digest": "9bf3c59e4c28",
+      "reason": "empty article"
+    },
+    {
+      "digest": "9e5b6d8d52c3",
+      "reason": "empty article"
+    },
+    {
+      "digest": "9f2f129a2390",
+      "reason": "empty article"
+    },
+    {
+      "digest": "9f56d2a73a35",
+      "reason": "empty article"
+    },
+    {
+      "digest": "9f7a00b262d4",
+      "reason": "empty article"
+    },
+    {
+      "digest": "a0e3ed64de4d",
+      "reason": "empty article"
+    },
+    {
+      "digest": "a196818c3242",
+      "reason": "empty article"
+    },
+    {
+      "digest": "a232c569cfd3",
+      "reason": "empty article"
+    },
+    {
+      "digest": "a24229abe4d8",
+      "reason": "empty article"
+    },
+    {
+      "digest": "a2855a051df4",
+      "reason": "empty article"
+    },
+    {
+      "digest": "a2e5f2ebdcbb",
+      "reason": "empty article"
+    },
+    {
+      "digest": "a2ef122a96d9",
+      "reason": "empty article"
+    },
+    {
+      "digest": "a32f6c012473",
+      "reason": "empty article"
+    },
+    {
+      "digest": "a377a37d8a44",
+      "reason": "empty article"
+    },
+    {
+      "digest": "a4024b8540dc",
+      "reason": "empty article"
+    },
+    {
+      "digest": "a54fa52adaec",
+      "reason": "empty article"
+    },
+    {
+      "digest": "a56980c69a91",
+      "reason": "empty article"
+    },
+    {
+      "digest": "a58fe1eb1e10",
+      "reason": "no facts found"
+    },
+    {
+      "digest": "a63f00381494",
+      "reason": "no facts found"
+    },
+    {
+      "digest": "a653aa619fbf",
+      "reason": "empty article"
+    },
+    {
+      "digest": "a69e03c8925a",
+      "reason": "empty article"
+    },
+    {
+      "digest": "a85a0843a210",
+      "reason": "empty article"
+    },
+    {
+      "digest": "a915d17f63b7",
+      "reason": "empty article"
+    },
+    {
+      "digest": "a9ae7d5aa96f",
+      "reason": "empty article"
+    },
+    {
+      "digest": "a9ea679cb5a2",
+      "reason": "empty article"
+    },
+    {
+      "digest": "ab57891f5256",
+      "reason": "empty article"
+    },
+    {
+      "digest": "ac1d240ea8aa",
+      "reason": "empty article"
+    },
+    {
+      "digest": "acc4c96d656a",
+      "reason": "empty article"
+    },
+    {
+      "digest": "ad0b09759e70",
+      "reason": "empty article"
+    },
+    {
+      "digest": "ae046a08fb2e",
+      "reason": "empty article"
+    },
+    {
+      "digest": "ae4e913a4474",
+      "reason": "empty article"
+    },
+    {
+      "digest": "af36a0288e6e",
+      "reason": "empty article"
+    },
+    {
+      "digest": "b00248771f6f",
+      "reason": "empty article"
+    },
+    {
+      "digest": "b03bed7b1a0c",
+      "reason": "empty article"
+    },
+    {
+      "digest": "b1972d766f05",
+      "reason": "no facts found"
+    },
+    {
+      "digest": "b1d535fbaf6c",
+      "reason": "empty article"
+    },
+    {
+      "digest": "b2df78201c4d",
+      "reason": "empty article"
+    },
+    {
+      "digest": "b5c8cd9716f6",
+      "reason": "empty article"
+    },
+    {
+      "digest": "b747ded1ff02",
+      "reason": "empty article"
+    },
+    {
+      "digest": "b88347769547",
+      "reason": "empty article"
+    },
+    {
+      "digest": "bb6e25bc6527",
+      "reason": "empty article"
+    },
+    {
+      "digest": "bbce0bccd261",
+      "reason": "empty article"
+    },
+    {
+      "digest": "bc560211dd16",
+      "reason": "empty article"
+    },
+    {
+      "digest": "bc7521c563c4",
+      "reason": "empty article"
+    },
+    {
+      "digest": "bcef2f6b160f",
+      "reason": "empty article"
+    },
+    {
+      "digest": "be01dc615981",
+      "reason": "empty article"
+    },
+    {
+      "digest": "bf236aa373d3",
+      "reason": "empty article"
+    },
+    {
+      "digest": "c07ab4f6be5b",
+      "reason": "empty article"
+    },
+    {
+      "digest": "c0a5208e5af9",
+      "reason": "empty article"
+    },
+    {
+      "digest": "c0ce121d964e",
+      "reason": "empty article"
+    },
+    {
+      "digest": "c0ffb351a3a4",
+      "reason": "empty article"
+    },
+    {
+      "digest": "c19db24221d8",
+      "reason": "empty article"
+    },
+    {
+      "digest": "c338c5dab0c1",
+      "reason": "empty article"
+    },
+    {
+      "digest": "c39fb26f8f25",
+      "reason": "empty article"
+    },
+    {
+      "digest": "c3b2858efbdd",
+      "reason": "empty article"
+    },
+    {
+      "digest": "c782225293bd",
+      "reason": "empty article"
+    },
+    {
+      "digest": "c7def9a53a0f",
+      "reason": "empty article"
+    },
+    {
+      "digest": "c8304d8e099a",
+      "reason": "empty article"
+    },
+    {
+      "digest": "ca7cc145e215",
+      "reason": "empty article"
+    },
+    {
+      "digest": "cae10264d1b2",
+      "reason": "empty article"
+    },
+    {
+      "digest": "cc7f48227f36",
+      "reason": "no facts found"
+    },
+    {
+      "digest": "cd7de2f8297b",
+      "reason": "no facts found"
+    },
+    {
+      "digest": "cd80b2efad09",
+      "reason": "empty article"
+    },
+    {
+      "digest": "cde11d30591e",
+      "reason": "empty article"
+    },
+    {
+      "digest": "ce18b8947483",
+      "reason": "empty article"
+    },
+    {
+      "digest": "cf655d9aed5d",
+      "reason": "empty article"
+    },
+    {
+      "digest": "d010cabadebb",
+      "reason": "empty article"
+    },
+    {
+      "digest": "d41740ffc6f5",
+      "reason": "no facts found"
+    },
+    {
+      "digest": "d4e003d73232",
+      "reason": "empty article"
+    },
+    {
+      "digest": "d5e73d5cf4d9",
+      "reason": "empty article"
+    },
+    {
+      "digest": "d5fd279434e4",
+      "reason": "empty article"
+    },
+    {
+      "digest": "d7c39596f7a4",
+      "reason": "empty article"
+    },
+    {
+      "digest": "d880e0477987",
+      "reason": "empty article"
+    },
+    {
+      "digest": "d953f08f5063",
+      "reason": "empty article"
+    },
+    {
+      "digest": "dac623b5e623",
+      "reason": "empty article"
+    },
+    {
+      "digest": "db25ade217d2",
+      "reason": "empty article"
+    },
+    {
+      "digest": "dd34fd4ecfc4",
+      "reason": "empty article"
+    },
+    {
+      "digest": "dd8684247c10",
+      "reason": "empty article"
+    },
+    {
+      "digest": "df8b2e52052d",
+      "reason": "empty article"
+    },
+    {
+      "digest": "e01cdb91dee6",
+      "reason": "empty article"
+    },
+    {
+      "digest": "e0b0274d7316",
+      "reason": "empty article"
+    },
+    {
+      "digest": "e0d7365a9765",
+      "reason": "empty article"
+    },
+    {
+      "digest": "e2bd6ee1744b",
+      "reason": "empty article"
+    },
+    {
+      "digest": "e497782ffb8b",
+      "reason": "empty article"
+    },
+    {
+      "digest": "e4bd36f337d0",
+      "reason": "empty article"
+    },
+    {
+      "digest": "e4c8dbb99550",
+      "reason": "empty article"
+    },
+    {
+      "digest": "e58d1a8cbdd8",
+      "reason": "empty article"
+    },
+    {
+      "digest": "e8dacc12a475",
+      "reason": "empty article"
+    },
+    {
+      "digest": "eada0c75f8a1",
+      "reason": "empty article"
+    },
+    {
+      "digest": "eade3c086de8",
+      "reason": "empty article"
+    },
+    {
+      "digest": "eafd0c634892",
+      "reason": "empty article"
+    },
+    {
+      "digest": "ec9639b1218c",
+      "reason": "empty article"
+    },
+    {
+      "digest": "ef88003322a1",
+      "reason": "empty article"
+    },
+    {
+      "digest": "efeabde7c6f2",
+      "reason": "empty article"
+    },
+    {
+      "digest": "f094e291438e",
+      "reason": "empty article"
+    },
+    {
+      "digest": "f69798a6227f",
+      "reason": "empty article"
+    },
+    {
+      "digest": "f76d0b2319ef",
+      "reason": "empty article"
+    },
+    {
+      "digest": "f79fcc9639dc",
+      "reason": "empty article"
+    },
+    {
+      "digest": "f7f8a26585fc",
+      "reason": "empty article"
+    },
+    {
+      "digest": "f954a6ef086c",
+      "reason": "empty article"
+    },
+    {
+      "digest": "f9639e169759",
+      "reason": "empty article"
+    },
+    {
+      "digest": "fa30461c8474",
+      "reason": "empty article"
+    },
+    {
+      "digest": "fc3a0ce7bfbf",
+      "reason": "empty article"
+    },
+    {
+      "digest": "fee9d8666532",
+      "reason": "empty article"
+    },
+    {
+      "digest": "ff8db2dfee00",
+      "reason": "empty article"
+    }
+  ],
+  "duplicates_skipped": 0
+}

@@ -1,17 +1,15 @@
-# Pipeline orchestration (spec §8). SAFETY MODEL:
-#   - The weekly cron runs READ-ONLY stages only (watch + tests): no spend,
-#     no writes to the Sheet, no changes to the map. Ever.
-#   - LLM + queue stages run ONLY when the repo variable PIPELINE_LLM_ENABLED
-#     is explicitly 'true' (repo Settings → Secrets and variables → Variables).
-#     Default: false. This is the owner's on/off switch for both spend and writes.
-#   - Even when enabled, writing is bounded: rows go to the Pending tab ONLY
-#     (sheets_queue hard-rails Main), and the public map never reads Pending.
+# Watch sweep CI — READ-ONLY by policy (security decision, 2026-08-26).
+#
+# This repo is PUBLIC. Therefore GitHub holds ZERO secrets/variables, and this
+# workflow MUST stay free of anything that needs credentials, costs money, or
+# writes data. Those stages (Fetch / LLM Extract / Sheet Queue) run only
+# locally via scripts/run_pipeline.sh — see docs/local-automation.md.
 name: data-watch
 
 on:
   schedule:
     - cron: "0 1 * * 1"   # Mondays 01:00 UTC (09:00 MYT)
-  workflow_dispatch:        # manual trigger for testing
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -19,8 +17,6 @@ permissions:
 jobs:
   watch:
     runs-on: ubuntu-latest
-    env:
-      LLM_STAGES_ON: ${{ vars.PIPELINE_LLM_ENABLED }}
     steps:
       - uses: actions/checkout@v4
 
@@ -31,19 +27,15 @@ jobs:
       - name: Run unit tests
         run: python3 -m unittest discover -s tests
 
-      # State makes the weekly run honest: page diffs + download memory must
-      # persist between runs or every week re-flags the same "new" content.
-      - name: Restore pipeline state (page snapshots + download memory)
+      - name: Restore page-snapshot state
         uses: actions/cache@v4
         with:
-          path: |
-            data/raw/page-state.json
-            data/raw/download-state.json
-          key: pipeline-state-${{ github.run_id }}
+          path: data/raw/page-state.json
+          key: watch-state-${{ github.run_id }}
           restore-keys: |
-            pipeline-state-
+            watch-state-
 
-      - name: Run watch sweep (RSS + page snapshots)
+      - name: Run watch sweep (public sources only, no secrets used)
         run: python3 -m scripts.pipeline_watch --config data/sources.json --out "data/raw/watch-$(date +%F).json" --state data/raw/page-state.json
 
       - name: Upload findings artifact
@@ -52,32 +44,3 @@ jobs:
           name: watch-findings
           path: data/raw/watch-*.json
           retention-days: 90
-
-      # ---------------- OFF-BY-DEFAULT: LLM/cost/write stages ----------------
-      - name: LLM/cost stages are OFF (nothing spent, nothing written)
-        if: ${{ env.LLM_STAGES_ON != 'true' }}
-        run: echo "Watch-only run. LLM extract + Sheet queue skipped. Enable via repo Settings → Variables → PIPELINE_LLM_ENABLED=true"
-
-      - name: Install queue dependency (google-auth)
-        if: ${{ env.LLM_STAGES_ON == 'true' }}
-        run: pip install -r requirements.txt
-
-      - name: Fetch new articles
-        if: ${{ env.LLM_STAGES_ON == 'true' }}
-        run: python3 -m scripts.pipeline_fetch --findings "data/raw/watch-$(date +%F).json" --state data/raw/download-state.json --articles data/raw/articles
-
-      - name: Extract facts via LLM (owner's provider/endpoint)
-        if: ${{ env.LLM_STAGES_ON == 'true' }}
-        env:
-          LLM_PROVIDER: ${{ vars.LLM_PROVIDER || 'openai' }}
-          LLM_BASE_URL: ${{ vars.LLM_BASE_URL }}
-          LLM_API_KEY: ${{ secrets.LLM_API_KEY }}
-          LLM_MODEL: ${{ vars.LLM_MODEL }}
-        run: python3 -m scripts.pipeline_extract --articles data/raw/articles --findings "data/raw/watch-$(date +%F).json" --out "data/raw/extractions-$(date +%F).json" --existing data/main.csv data/pending.csv
-
-      - name: Queue findings to Pending tab (never Main)
-        if: ${{ env.LLM_STAGES_ON == 'true' }}
-        env:
-          GCP_SA_JSON: ${{ secrets.GCP_SA_JSON }}
-          SHEET_ID: ${{ secrets.SHEET_ID }}
-        run: python3 -m scripts.sheets_queue --extraction "data/raw/extractions-$(date +%F).json" --tab Pending

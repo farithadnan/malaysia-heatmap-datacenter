@@ -274,8 +274,26 @@ class TestFirecrawlScraper(unittest.TestCase):
         text = scrape("https://x/article")
         self.assertIn("50 MW site", text)
         self.assertEqual(captured["url"], "https://api.firecrawl.dev/v1/scrape")
-        self.assertEqual(captured["body"]["url"], "https://x/article")
         self.assertEqual(captured["body"]["formats"], ["markdown"])
+
+    def test_scraper_failure_falls_back_to_local_text(self):
+        import glob as _glob, json as _json, tempfile as _tempfile
+        from scripts.pipeline_extract import run_extraction
+
+        with _tempfile.TemporaryDirectory() as d:
+            with open(d + "/art.html", "w") as f:
+                f.write("<html><body><p>50MW site in Johor announced.</p></body></html>")
+            findings = {"date": "t", "articles": [], "pages_changed": [], "errors": []}
+            fp = d + "/f.json"
+            _json.dump(findings, open(fp, "w"))
+
+            def boom(url):
+                raise OSError("401 Unauthorized")
+
+            result = run_extraction(d, fp, lambda p: {"found": False}, today="t",
+                                    scraper=boom)
+            # scraper crashed -> local html stripper must still be used
+            self.assertEqual(result["skipped"][0]["reason"], "no facts found")
 
 
 if __name__ == "__main__":

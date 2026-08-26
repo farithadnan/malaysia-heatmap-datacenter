@@ -179,7 +179,10 @@ def run_extraction(articles_dir, findings_path, llm_client, today, scraper=None)
         link = article["link"] if article else None
         source = link or f"{articles_dir}/{digest}"
         if scraper and link:
-            text = scraper(link)
+            try:
+                text = scraper(link)
+            except Exception:      # scraper down/bad key -> local stripper is the seam
+                text = None
             if text is None:
                 with open(path, encoding="utf-8", errors="replace") as f:
                     text = html_to_text(f.read())

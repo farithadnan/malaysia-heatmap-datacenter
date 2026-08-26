@@ -38,10 +38,10 @@ The map itself needs no setup: `python3 -m http.server` and open the browser.
 
 ## Automation safety model
 
-- **Weekly cron = read-only.** Watch sweep + tests. No LLM spend, no Sheet writes, no map changes — ever.
-- **The switch:** repo Settings → Secrets and variables → Variables → `PIPELINE_LLM_ENABLED`. Anything that costs money (LLM calls) or writes data (Sheet queue) runs only when this is `true`. Default: `false`.
-- **Even when ON, writes are boxed:** extraction queues into the Sheet's **Pending** tab only (a hard rail in code refuses Main), and the public map renders from Main only — nothing unreviewed ever reaches users automatically.
-- **The AI stays in your infrastructure:** with your current `.env`, extraction calls go to your own Modal endpoint. Data leaves your hands only if you point `LLM_*` at an external vendor.
+- **GitHub is credential-free by policy.** This repo is public → it holds **zero** secrets/variables — see [`docs/adr-001-local-llm-stages.md`](docs/adr-001-local-llm-stages.md) for why this amends spec §16's "via GitHub Actions" wording and why it's reversible.
+- **GitHub Actions = free discovery only.** The weekly CI runs tests + the read-only watch sweep (public sources, no secrets) and archives findings. Fetch/Extract/Queue are **not** here.
+- **Everything credentialed or spending runs locally:** `bash scripts/run_pipeline.sh` (watch → fetch → extract → queue), scheduled via Task Scheduler/cron — see [`docs/local-automation.md`](docs/local-automation.md).
+- **Writes stay boxed no matter where they run:** extraction queues into the Sheet's **Pending** tab only (a hard rail in code refuses Main), and the public map renders from Main alone — nothing unreviewed reaches users automatically.
 
 ## What will be built (per the spec)
 
