@@ -1,0 +1,40 @@
+# --- Python (data pipeline, spec §9) ---
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+env/
+pip-wheel-metadata/
+
+# Secrets / credentials (Google Sheets API key, LLM API key)
+.env
+.env.*
+*.pem
+*-key.json
+credentials*.json
+token.json
+
+# --- Node / frontend (Leaflet tooling, if added later) ---
+node_modules/
+dist/
+
+# --- Data work files ---
+*.xlsx
+~$*.xlsx
+*.tmp
+
+# Keep the clean-room GeoJSON/CSV exports, ignore local scratch
+scratch/
+
+# --- OS / editor noise ---
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+.idea/
+.vscode/*
+!.vscode/extensions.json
+
+# --- Logs ---
+*.log
