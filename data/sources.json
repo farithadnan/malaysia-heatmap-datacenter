@@ -1,0 +1,27 @@
+{
+  "comment": "Watch-stage sources (spec §8). Google News RSS = standing searches, no account needed. Pages are snapshot-diffed weekly. Public/no-login sources only (spec §8 legality table).",
+  "rss_feeds": [
+    {
+      "name": "Google News: data center Malaysia MW",
+      "url": "https://news.google.com/rss/search?q=data+center+Malaysia+MW&hl=en-MY&gl=MY&ceid=MY:en"
+    },
+    {
+      "name": "Google News: MIDA data centre",
+      "url": "https://news.google.com/rss/search?q=MIDA+data+centre&hl=en-MY&gl=MY&ceid=MY:en"
+    },
+    {
+      "name": "Google News: TNB data centre",
+      "url": "https://news.google.com/rss/search?q=TNB+data+centre&hl=en-MY&gl=MY&ceid=MY:en"
+    }
+  ],
+  "pages": [
+    {
+      "name": "MIDA media release archive",
+      "url": "https://www.mida.gov.my/media-release/"
+    },
+    {
+      "name": "TNB announcements archive",
+      "url": "https://www.tnb.com.my/announcements/"
+    }
+  ]
+}
