@@ -7,10 +7,13 @@ import unittest
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
+from scripts.llm import (  # noqa: E402
+    extract_json_object, make_anthropic_client, make_llm_client_from_env,
+    make_openai_compatible_client)
+from scripts.llm.providers import PROVIDERS, resolve_provider  # noqa: E402
 from scripts.pipeline_extract import (  # noqa: E402
-    build_prompt, dedupe_against_existing, extract_article, extract_json_object,
-    html_to_text, make_anthropic_client, make_firecrawl_scraper,
-    make_llm_client_from_env, make_openai_compatible_client, validate_extraction)
+    build_prompt, dedupe_against_existing, extract_article, html_to_text,
+    make_firecrawl_scraper, validate_extraction)
 
 
 class TestHtmlToText(unittest.TestCase):
@@ -243,6 +246,20 @@ class TestEnvFactory(unittest.TestCase):
     def test_unknown_provider_still_raises_clear_error(self):
         with self.assertRaisesRegex(RuntimeError, "unknown LLM_PROVIDER"):
             make_llm_client_from_env({"LLM_PROVIDER": "wat"}, poster=lambda *a: {})
+
+
+class TestProviderRegistry(unittest.TestCase):
+    def test_every_provider_declares_client_and_key_env(self):
+        for name, spec in PROVIDERS.items():
+            self.assertIn(spec["client"], ("anthropic", "openai"), name)
+            self.assertIn("key_env", spec, name)
+            self.assertIn("default_base", spec, name)
+
+    def test_aliases_resolve_to_canonical(self):
+        for alias, canon in [("modal", "openai"), ("modal.com", "openai"),
+                             ("fireworks.ai", "fireworks"),
+                             ("openai_compatible", "openai")]:
+            self.assertEqual(resolve_provider(alias)["client"], PROVIDERS[canon]["client"])
 
 
 class TestFirecrawlScraper(unittest.TestCase):
