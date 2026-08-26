@@ -18,6 +18,7 @@ A free, open-source, community-checked map showing where data centers are in Mal
 | `scripts/pipeline_watch.py` | Watch stage (spec §8): Google News RSS + MIDA/TNB page snapshots. `python3 scripts/pipeline_watch.py --config data/sources.json --out <findings.json> --state data/raw/page-state.json` |
 | `scripts/pipeline_fetch.py` | Fetch stage: idempotent article/PDF downloader. `python3 scripts/pipeline_fetch.py --findings <findings.json> --state data/raw/download-state.json --articles data/raw/articles` |
 | `scripts/sheets_queue.py` | Queue stage: appends validated rows to the Sheet's **Pending** tab (never Main). Needs `GCP_SA_JSON` + Sheet ID in Actions secrets. |
+| `scripts/pipeline_extract.py` | Extract stage: LLM pulls name/operator/location/MW from article text. Provider-generic: Anthropic, DeepSeek, any OpenAI-compatible endpoint (Modal, Groq…); optional Firecrawl scraping. Env keys in `.env.example`. |
 | `tests/` | Unit tests (stdlib `unittest`): `python3 -m unittest discover -s tests`. |
 
 ## Local setup
