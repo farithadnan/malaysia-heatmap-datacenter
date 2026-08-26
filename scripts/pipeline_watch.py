@@ -47,9 +47,14 @@ def parse_rss(xml_text):
     return items
 
 
+# Public endpoint homes (one place only). Source URLs themselves live in
+# data/sources.json — configuration, not code.
+GOOGLE_NEWS_RSS_URL = "https://news.google.com/rss/search"
+
+
 def google_news_rss_url(query):
     """Standing search feed URL, localized to Malaysia (spec §8)."""
-    return ("https://news.google.com/rss/search?"
+    return (GOOGLE_NEWS_RSS_URL + "?"
             + urllib.parse.urlencode({"q": query, "hl": "en-MY", "gl": "MY", "ceid": "MY:en"}))
 
 
