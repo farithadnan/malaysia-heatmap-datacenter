@@ -20,6 +20,19 @@ A free, open-source, community-checked map showing where data centers are in Mal
 | `scripts/sheets_queue.py` | Queue stage: appends validated rows to the Sheet's **Pending** tab (never Main). Needs `GCP_SA_JSON` + Sheet ID in Actions secrets. |
 | `tests/` | Unit tests (stdlib `unittest`): `python3 -m unittest discover -s tests`. |
 
+## Local setup
+
+```bash
+python3 -m pip install --user --break-system-packages virtualenv  # one time (no python3.12-venv on this box)
+python3 -m virtualenv .venv
+.venv/bin/pip install -r requirements.txt
+```
+
+Rules: tests run on plain `python3` (stdlib-only, no deps); anything that talks to
+external services uses `.venv/bin/python`; credentials live in `.env` (copy
+`.env.example`, see [`docs/setup-google-sheets-api.md`](docs/setup-google-sheets-api.md)).
+The map itself needs no setup: `python3 -m http.server` and open the browser.
+
 ## What will be built (per the spec)
 
 - **Static map** — Leaflet.js + OpenStreetMap/CARTO tiles, one marker per data center, marker size/color = MW, hosted free on GitHub Pages/Netlify/Vercel.

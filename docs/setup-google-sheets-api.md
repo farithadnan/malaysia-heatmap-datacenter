@@ -46,23 +46,26 @@ Repo → **Settings → Secrets and variables → Actions → New repository sec
 
 ## 5. Sanity check (once filled in)
 
-Local runs need `google-auth` installed (Actions installs it from
-`requirements.txt`; locally it goes to your user site):
+Dependencies for the pipeline live in the project virtualenv (never `--user`
+or system site). This machine lacks the `python3.12-venv` package, so we
+bootstrap with `virtualenv` (installed once as a user-site *tool*):
 
 ```bash
-python3 -m pip install --user --break-system-packages google-auth
+python3 -m pip install --user --break-system-packages virtualenv   # one time
+python3 -m virtualenv .venv                                        # create venv
+.venv/bin/pip install -r requirements.txt                          # project deps
 ```
 
-Then:
+Then (all pipeline commands use `.venv/bin/python`):
 
 ```bash
-python3 - <<'EOF'
+.venv/bin/python - <<'EOF'
 import os
 from scripts.sheets_queue import make_transport
 t = make_transport()   # loads .env, mints a service-account token
 sid = os.environ["SHEET_ID"]
 resp = t("GET", f"https://sheets.googleapis.com/v4/spreadsheets/{sid}", None)
-print("auth OK — sheet reachable:", resp["properties"]["title"])
+print("auth OK —", resp["properties"]["title"])
 print("tabs:", [s["properties"]["title"] for s in resp["sheets"]])
 EOF
 ```
