@@ -36,6 +36,13 @@ external services uses `.venv/bin/python`; credentials live in `.env` (copy
 `.env.example`, see [`docs/setup-google-sheets-api.md`](docs/setup-google-sheets-api.md)).
 The map itself needs no setup: `python3 -m http.server` and open the browser.
 
+## Automation safety model
+
+- **Weekly cron = read-only.** Watch sweep + tests. No LLM spend, no Sheet writes, no map changes — ever.
+- **The switch:** repo Settings → Secrets and variables → Variables → `PIPELINE_LLM_ENABLED`. Anything that costs money (LLM calls) or writes data (Sheet queue) runs only when this is `true`. Default: `false`.
+- **Even when ON, writes are boxed:** extraction queues into the Sheet's **Pending** tab only (a hard rail in code refuses Main), and the public map renders from Main only — nothing unreviewed ever reaches users automatically.
+- **The AI stays in your infrastructure:** with your current `.env`, extraction calls go to your own Modal endpoint. Data leaves your hands only if you point `LLM_*` at an external vendor.
+
 ## What will be built (per the spec)
 
 - **Static map** — Leaflet.js + OpenStreetMap/CARTO tiles, one marker per data center, marker size/color = MW, hosted free on GitHub Pages/Netlify/Vercel.
