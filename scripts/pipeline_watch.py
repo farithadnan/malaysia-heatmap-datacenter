@@ -8,7 +8,7 @@ Two mechanisms:
 Stdlib only. Network is injectable everywhere so tests stay offline.
 
 CLI:
-    python3 scripts/pipeline_watch.py --config data/sources.json \
+    python3 -m scripts.pipeline_watch --config data/sources.json \
         --out data/raw/watch-YYYY-MM-DD.json --state data/raw/page-state.json
 """
 import argparse
@@ -29,7 +29,7 @@ def hash_text(text):
 def parse_rss(xml_text):
     """RSS 2.0 XML -> list of {title, link, published} dicts."""
     try:
-        root = ET.fromstring(xml_text)
+        root = ET.fromstring(xml_text.lstrip("\ufeff \t\r\n"))
     except ET.ParseError as e:
         raise ValueError(f"malformed feed: {e}") from e
     if root.tag != "rss":

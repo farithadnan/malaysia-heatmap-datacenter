@@ -108,7 +108,7 @@ def read_tab(transport, sheet_id, tab):
 def main(argv, transport_factory=None):
     """CLI: queue an extractions JSON into the Pending tab.
 
-    python3 scripts/sheets_queue.py --extraction data/raw/extractions-Y.json
+    python3 -m scripts.sheets_queue --extraction data/raw/extractions-Y.json
 
     Dedupe: rows already present in the tab (same name+address,
     case-insensitive) are skipped. Main is refused upstream by the rail

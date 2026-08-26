@@ -1,5 +1,5 @@
 {
-  "comment": "Watch-stage sources (spec §8). Google News RSS = standing searches, no account needed. Pages are snapshot-diffed weekly. Public/no-login sources only (spec §8 legality table).",
+  "comment": "Watch-stage sources (spec \u00a78). Google News RSS = standing searches, no account needed. Pages are snapshot-diffed weekly. Public/no-login sources only (spec \u00a78 legality table).",
   "rss_feeds": [
     {
       "name": "Google News: data center Malaysia MW",
@@ -12,6 +12,10 @@
     {
       "name": "Google News: TNB data centre",
       "url": "https://news.google.com/rss/search?q=TNB+data+centre&hl=en-MY&gl=MY&ceid=MY:en"
+    },
+    {
+      "name": "MIDA media release RSS",
+      "url": "https://www.mida.gov.my/media-release/feed/"
     }
   ],
   "pages": [
@@ -23,5 +27,6 @@
       "name": "TNB announcements archive",
       "url": "https://www.tnb.com.my/announcements/"
     }
-  ]
+  ],
+  "_known_limitation": "Google News RSS entries return a Google wrapper page when fetched directly (GN redirect/consent JS shell, ~594KB, no article text). Publisher-direct feeds (e.g. MIDA /feed/) fetch cleanly. GN items stay useful as discovery; Fetch handles publisher-direct links."
 }

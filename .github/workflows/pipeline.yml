@@ -37,7 +37,7 @@ jobs:
             pipeline-state-
 
       - name: Run watch sweep (RSS + page snapshots)
-        run: python3 scripts/pipeline_watch.py --config data/sources.json --out "data/raw/watch-$(date +%F).json" --state data/raw/page-state.json
+        run: python3 -m scripts/pipeline_watch.py --config data/sources.json --out "data/raw/watch-$(date +%F).json" --state data/raw/page-state.json
 
       - name: Upload findings artifact
         uses: actions/upload-artifact@v4

@@ -14,9 +14,9 @@ A free, open-source, community-checked map showing where data centers are in Mal
 | [`docs/setup-google-sheets-api.md`](docs/setup-google-sheets-api.md) | Step-by-step: spreadsheet creation, service account, `.env` & GitHub secrets setup for the automation pipeline. |
 | `index.html` | The Leaflet map (Phase 2). Serve the repo root over HTTP and open it: `python3 -m http.server`. |
 | `data/` | Dataset: `main.csv` (approved rows), `pending.csv` (review queue), `datacenters.geojson` (map export), `queries/`, `raw/`. |
-| `scripts/csv_to_geojson.py` | Spreadsheet → GeoJSON converter. Stdlib only: `python3 scripts/csv_to_geojson.py data/main.csv data/datacenters.geojson`. |
-| `scripts/pipeline_watch.py` | Watch stage (spec §8): Google News RSS + MIDA/TNB page snapshots. `python3 scripts/pipeline_watch.py --config data/sources.json --out <findings.json> --state data/raw/page-state.json` |
-| `scripts/pipeline_fetch.py` | Fetch stage: idempotent article/PDF downloader. `python3 scripts/pipeline_fetch.py --findings <findings.json> --state data/raw/download-state.json --articles data/raw/articles` |
+| `scripts/csv_to_geojson.py` | Spreadsheet → GeoJSON converter. Stdlib only: `python3 -m scripts/csv_to_geojson.py data/main.csv data/datacenters.geojson`. |
+| `scripts/pipeline_watch.py` | Watch stage (spec §8): Google News RSS + MIDA/TNB page snapshots. `python3 -m scripts/pipeline_watch.py --config data/sources.json --out <findings.json> --state data/raw/page-state.json` |
+| `scripts/pipeline_fetch.py` | Fetch stage: idempotent article/PDF downloader. `python3 -m scripts/pipeline_fetch.py --findings <findings.json> --state data/raw/download-state.json --articles data/raw/articles` |
 | `scripts/sheets_queue.py` | Queue stage: appends validated rows to the Sheet's **Pending** tab (hard rail: never Main). Needs `GCP_SA_JSON` + Sheet ID in Actions secrets. |
 | `scripts/llm/` | LLM provider layer: declarative registry (`providers.py`), wire dialects (`clients.py`), tolerant JSON parsing (`parsing.py`). Env-driven: Anthropic/DeepSeek/OpenAI-compatible (Modal, Fireworks…). |
 | `scripts/common.py` | Single home for shared pipeline primitives (browser UA, link→filename digest contract). |
