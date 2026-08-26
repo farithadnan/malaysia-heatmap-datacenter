@@ -21,7 +21,7 @@
         "capacity_source": "OpenStreetMap way/1080495340",
         "status": "under construction",
         "connection_voltage": "",
-        "verification_status": "needs review",
+        "verification_status": "confirmed",
         "last_updated": "2026-08-26",
         "report_url": ""
       }
@@ -46,7 +46,7 @@
         "capacity_source": "OpenStreetMap node/14004400718",
         "status": "",
         "connection_voltage": "",
-        "verification_status": "needs review",
+        "verification_status": "confirmed",
         "last_updated": "2026-08-26",
         "report_url": ""
       }
@@ -71,7 +71,7 @@
         "capacity_source": "OpenStreetMap node/13854865053",
         "status": "",
         "connection_voltage": "",
-        "verification_status": "needs review",
+        "verification_status": "confirmed",
         "last_updated": "2026-08-26",
         "report_url": ""
       }
@@ -96,7 +96,7 @@
         "capacity_source": "OpenStreetMap node/13197364001",
         "status": "",
         "connection_voltage": "",
-        "verification_status": "needs review",
+        "verification_status": "confirmed",
         "last_updated": "2026-08-26",
         "report_url": ""
       }
@@ -121,7 +121,7 @@
         "capacity_source": "OpenStreetMap way/1026603690 (capacity:electricity tag)",
         "status": "operating",
         "connection_voltage": "",
-        "verification_status": "needs review",
+        "verification_status": "confirmed",
         "last_updated": "2026-08-26",
         "report_url": ""
       }
@@ -146,7 +146,7 @@
         "capacity_source": "OpenStreetMap way/848498975 + datacentermap.com/malaysia/cyberjaya/tm-klang-valley-data-center-kvdc/",
         "status": "",
         "connection_voltage": "",
-        "verification_status": "needs review",
+        "verification_status": "confirmed",
         "last_updated": "2026-08-26",
         "report_url": ""
       }
@@ -221,7 +221,7 @@
         "capacity_source": "OpenStreetMap: 14-way building cluster starting way/1432337885 (same area, consecutive IDs)",
         "status": "",
         "connection_voltage": "",
-        "verification_status": "needs review",
+        "verification_status": "confirmed",
         "last_updated": "2026-08-26",
         "report_url": ""
       }

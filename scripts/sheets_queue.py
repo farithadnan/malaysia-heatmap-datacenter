@@ -51,7 +51,13 @@ def sheet_api_url(sheet_id, tab):
 
 
 def append_rows(transport, sheet_id, tab, rows):
-    """Append rows to `tab` of the sheet. Returns the API response dict."""
+    """Append rows to `tab` of the sheet. Returns the API response dict.
+
+    Hard rail for the project's cardinal rule (spec §8): automation must
+    NEVER write to Main — regardless of what a caller asks for.
+    """
+    if tab.strip().lower() == "main":
+        raise ValueError("automation writes to Pending only — never Main (spec §8)")
     return transport("POST", sheet_api_url(sheet_id, tab), {"values": rows})
 
 
@@ -78,7 +84,8 @@ def make_transport(service_account_info=None):
         info, scopes=[SHEETS_SCOPE])
 
     def transport(method, url, body):
-        creds.refresh(Request())
+        if not creds.valid:          # don't mint a fresh token per call
+            creds.refresh(Request())
         data = None if body is None else json.dumps(body).encode("utf-8")
         req = urllib.request.Request(
             url,
@@ -90,3 +97,53 @@ def make_transport(service_account_info=None):
             return json.load(r)
 
     return transport
+
+
+def read_tab(transport, sheet_id, tab):
+    """All current values of a tab (list of rows), or [] when empty."""
+    resp = transport("GET", f"{SHEETS_API_BASE}/{sheet_id}/values/{tab}", None)
+    return resp.get("values", [])
+
+
+def main(argv, transport_factory=None):
+    """CLI: queue an extractions JSON into the Pending tab.
+
+    python3 scripts/sheets_queue.py --extraction data/raw/extractions-Y.json
+
+    Dedupe: rows already present in the tab (same name+address,
+    case-insensitive) are skipped. Main is refused upstream by the rail
+    in append_rows regardless of --tab.
+    """
+    import argparse
+    from scripts.pipeline_extract import dedupe_against_existing
+
+    ap = argparse.ArgumentParser(description="Queue extraction rows into the Sheet")
+    ap.add_argument("--extraction", required=True)
+    ap.add_argument("--tab", default="Pending")
+    args = ap.parse_args(argv[1:])
+
+    with open(args.extraction, encoding="utf-8") as f:
+        rows = json.load(f).get("rows", [])
+    if not rows:
+        print("nothing to queue")
+        return 0
+
+    make = transport_factory or make_transport
+    transport = make()
+    sheet_id = os.environ["SHEET_ID"]
+    existing = [
+        {"name": r[SCHEMA.index("name")] if len(r) > SCHEMA.index("name") else "",
+         "address": r[SCHEMA.index("address")] if len(r) > SCHEMA.index("address") else ""}
+        for r in read_tab(transport, sheet_id, args.tab)[1:]  # skip header row
+    ]
+    kept, dupes = dedupe_against_existing(rows, existing)
+    if kept:
+        ordered = [[str(r.get(f, "")) for f in SCHEMA] for r in kept]
+        append_rows(transport, sheet_id, args.tab, ordered)
+    print(f"queued {len(kept)} rows to {args.tab} ({dupes} duplicates skipped)")
+    return 0
+
+
+if __name__ == "__main__":
+    import sys
+    raise SystemExit(main(sys.argv))

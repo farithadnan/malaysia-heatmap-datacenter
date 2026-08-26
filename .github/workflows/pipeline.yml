@@ -24,6 +24,18 @@ jobs:
       - name: Run unit tests
         run: python3 -m unittest discover -s tests
 
+      # State makes the weekly run honest: page diffs + download memory must
+      # persist between runs or every week re-flags the same "new" content.
+      - name: Restore pipeline state (page snapshots + download memory)
+        uses: actions/cache@v4
+        with:
+          path: |
+            data/raw/page-state.json
+            data/raw/download-state.json
+          key: pipeline-state-${{ github.run_id }}
+          restore-keys: |
+            pipeline-state-
+
       - name: Run watch sweep (RSS + page snapshots)
         run: python3 scripts/pipeline_watch.py --config data/sources.json --out "data/raw/watch-$(date +%F).json" --state data/raw/page-state.json
 
