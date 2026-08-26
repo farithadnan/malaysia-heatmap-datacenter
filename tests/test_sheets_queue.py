@@ -6,7 +6,8 @@ import unittest
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
 from scripts.csv_to_geojson import SCHEMA  # noqa: E402
-from scripts.sheets_queue import append_rows, sheet_api_url, row_from_extraction  # noqa: E402
+from scripts.sheets_queue import (  # noqa: E402
+    append_rows, main as queue_main, read_tab, row_from_extraction, sheet_api_url)
 
 
 class TestRowFromExtraction(unittest.TestCase):
@@ -55,6 +56,53 @@ class TestAppendRows(unittest.TestCase):
             raise OSError("401 unauthorized")
         with self.assertRaises(OSError):
             append_rows(boom, "S", "Pending", [["a"]])
+
+    def test_append_to_main_is_a_hard_rail(self):
+        def never_called(method, url, body):
+            raise AssertionError("must not call the API for Main")
+        with self.assertRaises(ValueError):
+            append_rows(never_called, "S", "Main", [["a"]])
+        with self.assertRaises(ValueError):
+            append_rows(never_called, "S", " MAIN ", [["a"]])
+
+
+class TestReadTab(unittest.TestCase):
+    def test_returns_values_or_empty_list(self):
+        t = lambda m, u, b: {"values": [["name"], ["A"]]}
+        self.assertEqual(read_tab(t, "S", "Pending"), [["name"], ["A"]])
+        t2 = lambda m, u, b: {}
+        self.assertEqual(read_tab(t2, "S", "Pending"), [])
+
+
+class TestQueueCli(unittest.TestCase):
+    def test_queues_only_new_rows_deduped_against_sheet(self):
+        import json, tempfile
+        calls = []
+        header = list(SCHEMA)
+        existing = list(SCHEMA)
+        existing[0] = "Old DC"; existing[2] = "Kulai, Johor"
+
+        def transport(method, url, body):
+            if method == "GET":
+                return {"values": [header, existing]}
+            calls.append(body)
+            return {"updates": {"updatedRows": len(body["values"])}}
+
+        rows = [{"name": "Old DC", "address": "kulai, johor"},
+                {"name": "New DC", "address": "Cyberjaya"}]
+        with tempfile.NamedTemporaryFile("w", suffix=".json", delete=False) as f:
+            json.dump({"rows": rows, "skipped": []}, f)
+            path = f.name
+        import contextlib, io, os as _os
+        _os.environ["SHEET_ID"] = "S"
+        with contextlib.redirect_stdout(io.StringIO()):
+            rc = queue_main(["x", "--extraction", path], transport_factory=lambda: transport)
+        _os.unlink(path)
+        self.assertEqual(rc, 0)
+        self.assertEqual(len(calls), 1)
+        appended = calls[0]["values"]
+        self.assertEqual(len(appended), 1)
+        self.assertEqual(appended[0][SCHEMA.index("name")], "New DC")
 
 
 if __name__ == "__main__":

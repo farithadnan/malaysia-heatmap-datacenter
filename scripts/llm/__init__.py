@@ -41,6 +41,3 @@ def make_llm_client_from_env(env, poster=None):
         return clients.make_anthropic_client(key, model, **kwargs)
     return clients.make_openai_compatible_client(base, key, model, **kwargs)
 
-
-# Friendlier alias for new code.
-make_client_from_env = make_llm_client_from_env

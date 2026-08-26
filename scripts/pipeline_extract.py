@@ -15,6 +15,7 @@ the spec §5 schema are dropped with a reason; texts with no relevant facts
 produce nothing.
 """
 import argparse
+import csv
 import glob
 import json
 import os
@@ -22,6 +23,7 @@ import re
 from datetime import date
 from html.parser import HTMLParser
 
+from scripts.common import link_digest
 from scripts.csv_to_geojson import SCHEMA
 from scripts.env import load_dotenv
 from scripts.llm import make_llm_client_from_env  # provider factory (scripts/llm)
@@ -127,7 +129,7 @@ def extract_article(article_text, source_url, llm_client, today):
         "name": str(parsed.get("name", "")).strip(),
         "operator": str(parsed.get("operator", "") or "").strip(),
         "address": str(parsed.get("location", parsed.get("address", "")) or "").strip(),
-        "capacity_mw": str(parsed.get("capacity_mw") or "").replace("MW", "").strip(),
+        "capacity_mw": re.sub(r"(?i)\s*mw\s*$", "", str(parsed.get("capacity_mw") or "")).strip(),
         "capacity_type": str(parsed.get("capacity_type") or "estimated").strip(),
         "capacity_source": f"article: {source_url}",
         "status": str(parsed.get("status") or "").strip(),
@@ -150,6 +152,7 @@ def dedupe_against_existing(new_rows, existing_rows):
             skipped += 1
         else:
             kept.append(r)
+            seen.add(key(r))
     return kept, skipped
 
 
@@ -166,17 +169,14 @@ def run_extraction(articles_dir, findings_path, llm_client, today, scraper=None)
     for a in findings.get("articles", []):
         by_digest[sha1_digest(a["link"])] = a
 
+    patterns = ["**/*.html", "**/*.md", "*.html", "*.md"]
+    paths = sorted({p for pat in patterns
+                    for p in glob.glob(os.path.join(articles_dir, pat), recursive=True)})
     rows, skipped = [], []
-    for path in sorted(glob.glob(os.path.join(articles_dir, "*.*"))):
+    for path in paths:
         digest = os.path.splitext(os.path.basename(path))[0]
-        if path.endswith(".pdf"):
-            skipped.append({"digest": digest, "reason": "PDF — deferred to Issue #15"})
-            continue
-        link = None
-        for d, a in by_digest.items():
-            if d == digest:
-                link = a["link"]
-                break
+        article = by_digest.get(digest)
+        link = article["link"] if article else None
         source = link or f"{articles_dir}/{digest}"
         if scraper and link:
             text = scraper(link)
@@ -204,10 +204,12 @@ def main(argv):
 
     load_dotenv()
     client = make_llm_client_from_env(os.environ)
+    scraper = (make_firecrawl_scraper(os.environ["FC_API_KEY"])
+               if os.environ.get("FC_API_KEY") else None)
     today = date.today().isoformat()
-    result = run_extraction(args.articles, args.findings, client, today)
+    result = run_extraction(args.articles, args.findings, client, today,
+                            scraper=scraper)
 
-    import csv
     existing = []
     for path in args.existing:
         try:

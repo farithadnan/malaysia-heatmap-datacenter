@@ -14,6 +14,8 @@ import urllib.request
 from scripts.llm.parsing import extract_json_object
 from scripts.llm.providers import ANTHROPIC_MESSAGES_URL
 
+MAX_TOKENS = 512   # extraction replies are small; keep both dialects cheap alike
+
 
 def post_json(url, headers, body):
     """Shared JSON-over-HTTP POST (the only transport primitive we need)."""
@@ -30,7 +32,7 @@ def make_anthropic_client(api_key, model, poster=post_json):
             ANTHROPIC_MESSAGES_URL,
             {"x-api-key": api_key, "anthropic-version": "2023-06-01",
              "Content-Type": "application/json"},
-            {"model": model, "max_tokens": 512,
+            {"model": model, "max_tokens": MAX_TOKENS,
              "messages": [{"role": "user", "content": prompt_text}]})
         text = "".join(b.get("text", "") for b in resp.get("content", []))
         return extract_json_object(text)
@@ -54,7 +56,7 @@ def make_openai_compatible_client(base_url, api_key, model, poster=post_json):
             headers["Authorization"] = f"Bearer {api_key}"
         resp = poster(
             f"{base}/chat/completions", headers,
-            {"model": model, "max_tokens": 512,
+            {"model": model, "max_tokens": MAX_TOKENS,
              "messages": [{"role": "user", "content": prompt_text}]})
         text = resp.get("choices", [{}])[0].get("message", {}).get("content", "")
         return extract_json_object(text)
