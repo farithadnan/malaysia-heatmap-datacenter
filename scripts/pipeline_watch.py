@@ -19,10 +19,7 @@ import urllib.request
 import xml.etree.ElementTree as ET
 from datetime import date
 
-# Government/press archive pages reject bare scripts via Cloudflare; a standard
-# browser UA is accepted. Content fetched is public press material only (spec §8).
-USER_AGENT = ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
-              "(KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36")
+from scripts.common import USER_AGENT
 
 
 def hash_text(text):
@@ -118,11 +115,13 @@ def run(config_path, state_path, fetcher=fetch_text, today=None):
             state = json.load(f)
     except (OSError, json.JSONDecodeError):
         state = {}
-    try:
-        pages_changed, state = snapshot_pages(config.get("pages", []), state, fetcher)
-    except Exception as e:
-        pages_changed = []
-        errors.append(f"page snapshots: {e}")
+    pages_changed = []
+    for page in config.get("pages", []):
+        try:                                # per-page isolation, like feeds above
+            changed, state = snapshot_pages([page], state, fetcher)
+            pages_changed.extend(changed)
+        except Exception as e:              # one bad page must not kill the others
+            errors.append(f"{page['name']}: {e}")
 
     return {
         "date": today,
