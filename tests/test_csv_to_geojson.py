@@ -86,7 +86,8 @@ class TestConvertCsv(unittest.TestCase):
             out1, out2 = os.path.join(d, "a.geojson"), os.path.join(d, "b.geojson")
             convert_csv(src, out1)
             convert_csv(src, out2)
-            self.assertEqual(open(out1, "rb").read(), open(out2, "rb").read())
+            with open(out1, "rb") as f1, open(out2, "rb") as f2:
+                self.assertEqual(f1.read(), f2.read())
 
     def test_written_file_is_valid_feature_collection(self):
         with tempfile.TemporaryDirectory() as d:
