@@ -106,31 +106,6 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
-          101.7293923,
-          3.1743861
-        ]
-      },
-      "properties": {
-        "name": "MAF War Gaming Simulation Center",
-        "operator": "",
-        "address": "",
-        "latitude": "3.1743861",
-        "longitude": "101.7293923",
-        "capacity_mw": null,
-        "capacity_type": "",
-        "capacity_source": "OpenStreetMap node/10939660647",
-        "status": "",
-        "connection_voltage": "",
-        "verification_status": "needs review",
-        "last_updated": "2026-08-26",
-        "report_url": ""
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
           101.6284258,
           3.0946929
         ]
@@ -145,31 +120,6 @@
         "capacity_type": "confirmed",
         "capacity_source": "OpenStreetMap way/1026603690 (capacity:electricity tag)",
         "status": "operating",
-        "connection_voltage": "",
-        "verification_status": "needs review",
-        "last_updated": "2026-08-26",
-        "report_url": ""
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          103.0913249,
-          5.4057625
-        ]
-      },
-      "properties": {
-        "name": "Server Room B2",
-        "operator": "",
-        "address": "",
-        "latitude": "5.4057625",
-        "longitude": "103.0913249",
-        "capacity_mw": null,
-        "capacity_type": "",
-        "capacity_source": "OpenStreetMap node/7001771562",
-        "status": "",
         "connection_voltage": "",
         "verification_status": "needs review",
         "last_updated": "2026-08-26",

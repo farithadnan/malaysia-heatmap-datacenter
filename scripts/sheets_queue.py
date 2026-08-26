@@ -24,6 +24,7 @@ import urllib.parse
 import urllib.request
 
 from scripts.csv_to_geojson import SCHEMA
+from scripts.env import load_dotenv
 
 SHEETS_SCOPE = "https://www.googleapis.com/auth/spreadsheets"
 
@@ -66,7 +67,11 @@ def make_transport(service_account_info=None):
             "google-auth is required for real Sheets writes; it is installed "
             "in GitHub Actions via requirements.txt") from e
 
-    info = service_account_info or json.loads(os.environ["GCP_SA_JSON"])
+    if service_account_info is None:
+        load_dotenv()  # local dev fallback; Actions injects env vars directly
+        info = json.loads(os.environ["GCP_SA_JSON"])
+    else:
+        info = service_account_info
     creds = service_account.Credentials.from_service_account_info(
         info, scopes=[SHEETS_SCOPE])
 

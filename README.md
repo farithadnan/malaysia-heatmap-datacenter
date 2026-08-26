@@ -11,6 +11,7 @@ A free, open-source, community-checked map showing where data centers are in Mal
 | [`spec.md`](spec.md) | The full project specification (16 sections): goals, scope, data model, sources, automation pipeline, tech stack, roadmap, and rules. **Start here.** |
 | `malaysia-datacenter-map-spec.md.pdf` | Original spec document (PDF export). `spec.md` is the working, greppable version of the same content. |
 | [`docs/milestones/`](docs/milestones/README.md) | Task tracking: 7 phase milestones, 24 issues with acceptance criteria, and the `phase/N-*` branch mapping. |
+| [`docs/setup-google-sheets-api.md`](docs/setup-google-sheets-api.md) | Step-by-step: spreadsheet creation, service account, `.env` & GitHub secrets setup for the automation pipeline. |
 | `index.html` | The Leaflet map (Phase 2). Serve the repo root over HTTP and open it: `python3 -m http.server`. |
 | `data/` | Dataset: `main.csv` (approved rows), `pending.csv` (review queue), `datacenters.geojson` (map export), `queries/`, `raw/`. |
 | `scripts/csv_to_geojson.py` | Spreadsheet → GeoJSON converter. Stdlib only: `python3 scripts/csv_to_geojson.py data/main.csv data/datacenters.geojson`. |
