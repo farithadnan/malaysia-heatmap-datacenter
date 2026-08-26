@@ -30,6 +30,7 @@ from scripts.env import load_dotenv
 
 ANTHROPIC_MESSAGES_URL = "https://api.anthropic.com/v1/messages"
 DEEPSEEK_BASE_URL = "https://api.deepseek.com"
+FIREWORKS_BASE_URL = "https://api.fireworks.ai/inference/v1"
 FIRECRAWL_SCRAPE_URL = "https://api.firecrawl.dev/v1/scrape"
 DEFAULT_CLAUDE_MODEL = os.environ.get("CLAUDE_MODEL", "claude-haiku-4-5-20251001")
 MAX_ARTICLE_CHARS = 12_000          # keep prompts cheap; big articles truncate
@@ -129,11 +130,20 @@ def make_anthropic_client(api_key, model=DEFAULT_CLAUDE_MODEL, poster=_post_json
 
 
 def make_openai_compatible_client(base_url, api_key, model, poster=_post_json):
+    """Any OpenAI-compatible /chat/completions API (Modal, Fireworks, DeepSeek,
+    Groq, Together, OpenRouter…). Auth header is omitted when api_key is empty
+    (many self-hosted/Modal endpoints are unauthenticated). A missing "/v1"
+    suffix on base_url is auto-corrected — the #1 config fumble."""
     base = base_url.rstrip("/")
+    if not re.search(r"/v\d+$", base):
+        base += "/v1"
+
     def call(article_text):
+        headers = {"Content-Type": "application/json"}
+        if api_key:
+            headers["Authorization"] = f"Bearer {api_key}"
         resp = poster(
-            f"{base}/chat/completions",
-            {"Authorization": f"Bearer {api_key}", "Content-Type": "application/json"},
+            f"{base}/chat/completions", headers,
             {"model": model, "max_tokens": 512,
              "messages": [{"role": "user", "content": build_prompt(article_text)}]})
         text = resp.get("choices", [{}])[0].get("message", {}).get("content", "")
@@ -142,26 +152,39 @@ def make_openai_compatible_client(base_url, api_key, model, poster=_post_json):
 
 
 def make_llm_client_from_env(env, poster=_post_json):
-    """Provider factory (see module docstring). env: mapping like os.environ."""
-    provider = (env.get("LLM_PROVIDER") or "anthropic").lower()
+    """Provider factory. Provider VALUES are env/config-driven, not hardcoded:
+
+    anthropic | deepseek | fireworks[.ai] | openai | openai_compatible |
+    modal | modal.com   (last two = OpenAI-compatible aliases)
+    """
+    provider = (env.get("LLM_PROVIDER") or "anthropic").lower().strip()
     if provider == "anthropic":
         key = env.get("ANTHROPIC_API_KEY")
         if not key:
             raise RuntimeError("LLM_PROVIDER=anthropic requires ANTHROPIC_API_KEY")
         return make_anthropic_client(key, env.get("CLAUDE_MODEL", DEFAULT_CLAUDE_MODEL), poster)
-    key = env.get("LLM_API_KEY")
-    if not key:
-        raise RuntimeError(f"LLM_PROVIDER={provider} requires LLM_API_KEY")
-    model = env.get("LLM_MODEL")
-    if not model:
-        raise RuntimeError(f"LLM_PROVIDER={provider} requires LLM_MODEL")
+
     if provider == "deepseek":
-        return make_openai_compatible_client(DEEPSEEK_BASE_URL, key, model, poster)
-    if provider in ("openai", "openai_compatible"):
+        if not env.get("LLM_API_KEY"):
+            raise RuntimeError("LLM_PROVIDER=deepseek requires LLM_API_KEY")
+        return make_openai_compatible_client(
+            DEEPSEEK_BASE_URL, env["LLM_API_KEY"], env.get("LLM_MODEL", "deepseek-chat"), poster)
+
+    if provider in ("fireworks", "fireworks.ai"):
+        base = env.get("LLM_BASE_URL") or FIREWORKS_BASE_URL
+        return make_openai_compatible_client(
+            base, env.get("LLM_API_KEY"), env.get("LLM_MODEL"), poster)
+
+    if provider in ("openai", "openai_compatible", "modal", "modal.com"):
         base = env.get("LLM_BASE_URL")
         if not base:
-            raise RuntimeError("LLM_PROVIDER=openai requires LLM_BASE_URL")
-        return make_openai_compatible_client(base, key, model, poster)
+            raise RuntimeError(f"LLM_PROVIDER={provider} requires LLM_BASE_URL")
+        if not env.get("LLM_MODEL"):
+            raise RuntimeError(f"LLM_PROVIDER={provider} requires LLM_MODEL")
+        # key optional: Modal/self-hosted endpoints are often unauthenticated
+        return make_openai_compatible_client(
+            base, env.get("LLM_API_KEY"), env["LLM_MODEL"], poster)
+
     raise RuntimeError(f"unknown LLM_PROVIDER: {provider}")
 
 # ------------------------------------------------------------- orchestration --

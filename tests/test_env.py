@@ -38,6 +38,16 @@ class TestLoadDotenv(unittest.TestCase):
         os.unlink(path)
         self.assertEqual(os.environ["FOO"], "preset")
 
+    def test_unquoted_inline_comment_is_stripped(self):
+        with tempfile.NamedTemporaryFile("w", suffix=".env", delete=False) as f:
+            f.write('PROVIDER=openai   # anthropic | deepseek | openai\n'
+                    'QUOTED="value with #_inside"\n')
+            path = f.name
+        loaded = load_dotenv(path)
+        os.unlink(path)
+        self.assertEqual(loaded["PROVIDER"], "openai")
+        self.assertEqual(loaded["QUOTED"], "value with #_inside")
+
 
 if __name__ == "__main__":
     unittest.main()
