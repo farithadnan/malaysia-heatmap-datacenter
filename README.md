@@ -21,28 +21,62 @@ A free, open-source, community-checked map showing where data centers are in Mal
 | `scripts/pipeline_fetch.py` | Fetch stage: idempotent article/PDF downloader. `python3 -m scripts/pipeline_fetch.py --findings <findings.json> --state data/raw/download-state.json --articles data/raw/articles` |
 | `scripts/sheets_queue.py` | Queue stage: appends validated rows to the Sheet's **Pending** tab (hard rail: never Main). Needs `GCP_SA_JSON` + Sheet ID in Actions secrets. |
 | `scripts/llm/` | LLM provider layer: declarative registry (`providers.py`), wire dialects (`clients.py`), tolerant JSON parsing (`parsing.py`). Env-driven: Anthropic/DeepSeek/OpenAI-compatible (Modal, Fireworks…). |
+| `scripts/pending_review.py` | Review helper: ranks `data/pending.csv` rows by verification-readiness (A: street-level coords + all fields → D: no coords) so promoting to Main is quick. Stdlib: `python3 -m scripts.pending_review`. |
 | `scripts/common.py` | Single home for shared pipeline primitives (browser UA, link→filename digest contract). |
-| `scripts/pipeline_extract.py` | Extract stage: LLM pulls name/operator/location/MW from article text. Provider-generic: Anthropic, DeepSeek, any OpenAI-compatible endpoint (Modal, Groq…); optional Firecrawl scraping. Env keys in `.env.example`. |
+| `scripts/pipeline_extract.py` | Extract stage: LLM pulls name/operator/location/MW from article text. Provider-generic: Anthropic, DeepSeek, any OpenAI-compatible endpoint (Modal, Fireworks, Groq…). Env keys in `.env.example`. |
 | `tests/` | Unit tests (stdlib `unittest`): `python3 -m unittest discover -s tests`. |
 
 ## Local setup
 
+The pipeline runs in an isolated Python virtualenv. Only the stages that talk to
+external services (LLM extract, Sheets queue) need `requirements.txt`; the unit
+tests and map stay stdlib-only and need no setup.
+
+**1. Create a virtualenv** — prefer Python's built-in `venv` module. Some Linux
+distros (Debian/Ubuntu) ship it missing, so the fallback installs the `virtualenv`
+package instead (there `--break-system-packages` is required; elsewhere drop it):
+
 ```bash
-python3 -m pip install --user --break-system-packages virtualenv  # one time (no python3.12-venv on this box)
+# Preferred — built-in, no install needed:
+python3 -m venv .venv
+
+# Fallback — only if the above errors about missing "venv"/"ensurepip"
+#   (Debian/Ubuntu):
+python3 -m pip install --user --break-system-packages virtualenv
 python3 -m virtualenv .venv
-.venv/bin/pip install -r requirements.txt
 ```
 
-Rules: tests run on plain `python3` (stdlib-only, no deps); anything that talks to
-external services uses `.venv/bin/python`; credentials live in `.env` (copy
-`.env.example`, see [`docs/setup-google-sheets-api.md`](docs/setup-google-sheets-api.md)).
-The map itself needs no setup: `python3 -m http.server` and open the browser.
+**2. Install dependencies:**
+
+```bash
+# Linux / macOS / Git Bash on Windows:
+.venv/bin/pip install -r requirements.txt
+
+# Windows (PowerShell / cmd):
+.venv\Scripts\pip.exe install -r requirements.txt
+```
+
+**3. Activate it** (optional; you can also call the venv's `python` directly):
+
+```bash
+source .venv/bin/activate          # Linux/macOS/Git Bash
+.venv\Scripts\Activate.ps1         # Windows PowerShell
+```
+
+Notes for Windows users: the Python command is usually `python`, not `python3`,
+and everything under the venv lives in `.venv\Scripts\` rather than `.venv/bin/`.
+
+**Credentials:** copy `.env.example` → `.env` and fill it in — see
+[`docs/setup-google-sheets-api.md`](docs/setup-google-sheets-api.md) (`.env` is
+gitignored). Tests run on plain `python3` (stdlib-only, no deps); anything that
+talks to external services uses the venv Python. The map itself needs no setup:
+`python3 -m http.server` and open the browser.
 
 ## Automation safety model
 
 - **GitHub is credential-free by policy.** This repo is public → it holds **zero** secrets/variables — see [`docs/adr-001-local-llm-stages.md`](docs/adr-001-local-llm-stages.md) for why this amends spec §16's "via GitHub Actions" wording and why it's reversible.
 - **GitHub Actions = free discovery only.** The weekly CI runs tests + the read-only watch sweep (public sources, no secrets) and archives findings. Fetch/Extract/Queue are **not** here.
-- **Everything credentialed or spending runs locally:** `bash scripts/run_pipeline.sh` (watch → fetch → extract → queue), scheduled via Task Scheduler/cron — see [`docs/local-automation.md`](docs/local-automation.md).
+- **Everything credentialed or spending runs locally:** `bash scripts/run_pipeline.sh` (watch → fetch → extract → queue), scheduled via Task Scheduler/cron — see [`docs/local-automation.md`](docs/local-automation.md). Extraction is LLM-only (e.g. Anthropic/DeepSeek/Fireworks); no external scraping service is used — see [`docs/adr-002-no-external-scraper.md`](docs/adr-002-no-external-scraper.md).
 - **Writes stay boxed no matter where they run:** extraction queues into the Sheet's **Pending** tab only (a hard rail in code refuses Main), and the public map renders from Main alone — nothing unreviewed reaches users automatically.
 
 ## What will be built (per the spec)
