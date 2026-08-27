@@ -9,10 +9,19 @@
     html, body, #map { height: 100%; margin: 0; }
     .note {
       position: absolute; top: 10px; right: 10px; z-index: 1000;
-      background: rgba(255, 255, 255, .92); padding: 8px 12px;
+      background: rgba(255, 255, 255, .92);
       border-radius: 6px; font: 13px/1.4 system-ui, sans-serif;
       max-width: 260px; box-shadow: 0 1px 4px rgba(0,0,0,.3);
     }
+    .note-toggle {
+      width: 100%; background: none; border: none; cursor: pointer;
+      padding: 8px 12px; text-align: left; font: inherit; color: inherit;
+      display: flex; justify-content: space-between; align-items: center; gap: 8px;
+    }
+    .note-caret { transition: transform .15s ease; }
+    .note.collapsed .note-caret { transform: rotate(-90deg); }
+    .note-body { padding: 0 12px 8px; }
+    .note.collapsed .note-body { display: none; }
     .legend-line { display: flex; align-items: center; gap: 6px; }
     .dot { border-radius: 50%; display: inline-block; }
     .dot-confirmed { width: 14px; height: 14px; background: #e6550d; }
@@ -29,28 +38,41 @@
 <body>
   <div id="map"></div>
   <div class="note">
-    <strong>Malaysia Data Center Map</strong> (early build)<br>
-    <input id="search" type="search" placeholder="Search name/operator…"
-           style="width:100%;box-sizing:border-box;margin:6px 0 4px;padding:3px 6px">
-    <select id="status-filter" style="width:100%;margin-bottom:6px">
-      <option value="">All statuses</option>
-      <option value="operating">operating</option>
-      <option value="under construction">under construction</option>
-      <option value="planned">planned</option>
-    </select><br>
-    Marker size = power (MW). Fill: warmth/confirmation.
-    <div class="legend-line"><span class="dot dot-confirmed"></span> confirmed MW</div>
-    <div class="legend-line"><span class="dot dot-estimated"></span> estimated MW</div>
-    <div class="legend-line"><span class="dot dot-unknown"></span> MW unknown</div>
-    Border: status.
-    <div class="legend-line"><span class="ring ring-operating"></span> operating</div>
-    <div class="legend-line"><span class="ring ring-construction"></span> under construction</div>
-    <div class="legend-line"><span class="ring ring-planned"></span> planned</div>
-    <span id="count"></span>
+    <button id="note-toggle" class="note-toggle" type="button"
+            aria-expanded="true" aria-controls="note-body">
+      <strong>Malaysia Data Center Map (beta)</strong>
+      <span class="note-caret" aria-hidden="true">▾</span>
+    </button>
+    <div id="note-body" class="note-body">
+      <input id="search" type="search" placeholder="Search name/operator…"
+             style="width:100%;box-sizing:border-box;margin:0 0 4px;padding:3px 6px">
+      <select id="status-filter" style="width:100%;margin-bottom:6px">
+        <option value="">All statuses</option>
+        <option value="operating">operating</option>
+        <option value="under construction">under construction</option>
+        <option value="planned">planned</option>
+      </select>
+      Marker size = power (MW). Fill: warmth/confirmation.
+      <div class="legend-line"><span class="dot dot-confirmed"></span> confirmed MW</div>
+      <div class="legend-line"><span class="dot dot-estimated"></span> estimated MW</div>
+      <div class="legend-line"><span class="dot dot-unknown"></span> MW unknown</div>
+      Border: status.
+      <div class="legend-line"><span class="ring ring-operating"></span> operating</div>
+      <div class="legend-line"><span class="ring ring-construction"></span> under construction</div>
+      <div class="legend-line"><span class="ring ring-planned"></span> planned</div>
+      <span id="count"></span>
+    </div>
   </div>
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script>
     const map = L.map('map');
+
+    // Collapsible control panel (keeps the map view clean on mobile).
+    const note = document.querySelector('.note');
+    document.getElementById('note-toggle').addEventListener('click', () => {
+      const collapsed = note.classList.toggle('collapsed');
+      note.querySelector('#note-toggle').setAttribute('aria-expanded', String(!collapsed));
+    });
 
     // Spec §14: OSM attribution is a license condition, not optional.
     L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {

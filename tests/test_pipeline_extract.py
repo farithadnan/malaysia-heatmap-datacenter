@@ -13,7 +13,7 @@ from scripts.llm import (  # noqa: E402
 from scripts.llm.providers import PROVIDERS, resolve_provider  # noqa: E402
 from scripts.pipeline_extract import (  # noqa: E402
     build_prompt, dedupe_against_existing, extract_article, html_to_text,
-    make_firecrawl_scraper, validate_extraction)
+    validate_extraction)
 
 
 class TestHtmlToText(unittest.TestCase):
@@ -260,40 +260,6 @@ class TestProviderRegistry(unittest.TestCase):
                              ("fireworks.ai", "fireworks"),
                              ("openai_compatible", "openai")]:
             self.assertEqual(resolve_provider(alias)["client"], PROVIDERS[canon]["client"])
-
-
-class TestFirecrawlScraper(unittest.TestCase):
-    def test_posts_url_and_returns_markdown(self):
-        captured = {}
-
-        def poster(url, headers, body):
-            captured.update(url=url, headers=headers, body=body)
-            return {"success": True, "data": {"markdown": "# clean article\n50 MW site"}}
-
-        scrape = make_firecrawl_scraper(api_key="fc-test", poster=poster)
-        text = scrape("https://x/article")
-        self.assertIn("50 MW site", text)
-        self.assertEqual(captured["url"], "https://api.firecrawl.dev/v1/scrape")
-        self.assertEqual(captured["body"]["formats"], ["markdown"])
-
-    def test_scraper_failure_falls_back_to_local_text(self):
-        import glob as _glob, json as _json, tempfile as _tempfile
-        from scripts.pipeline_extract import run_extraction
-
-        with _tempfile.TemporaryDirectory() as d:
-            with open(d + "/art.html", "w") as f:
-                f.write("<html><body><p>50MW site in Johor announced.</p></body></html>")
-            findings = {"date": "t", "articles": [], "pages_changed": [], "errors": []}
-            fp = d + "/f.json"
-            _json.dump(findings, open(fp, "w"))
-
-            def boom(url):
-                raise OSError("401 Unauthorized")
-
-            result = run_extraction(d, fp, lambda p: {"found": False}, today="t",
-                                    scraper=boom)
-            # scraper crashed -> local html stripper must still be used
-            self.assertEqual(result["skipped"][0]["reason"], "no facts found")
 
 
 if __name__ == "__main__":

@@ -29,7 +29,7 @@ What the pipeline needs to write findings into the **Pending** tab automatically
 
 ## 3. Configure credentials locally (.env)
 
-1. Copy the template: `cp .env.example .env`
+1. Copy the template: `cp .env.example .env` (Windows: `copy .env.example .env`)
 2. Fill in:
    - `SHEET_ID` — from step 1.5
    - `GCP_SA_JSON` — the **entire contents** of the downloaded key JSON, on **one single line** (it starts `{"type": "service_account", ...}`)
@@ -47,16 +47,21 @@ Repo → **Settings → Secrets and variables → Actions → New repository sec
 ## 5. Sanity check (once filled in)
 
 Dependencies for the pipeline live in the project virtualenv (never `--user`
-or system site). This machine lacks the `python3.12-venv` package, so we
-bootstrap with `virtualenv` (installed once as a user-site *tool*):
+or system site). Create it with Python's built-in `venv`, or — on distros that
+ship it missing (Debian/Ubuntu) — bootstrap the `virtualenv` package once:
 
 ```bash
-python3 -m pip install --user --break-system-packages virtualenv   # one time
-python3 -m virtualenv .venv                                        # create venv
-.venv/bin/pip install -r requirements.txt                          # project deps
+python3 -m venv .venv                                            # preferred
+# fallback (Debian/Ubuntu only; drop --break-system-packages elsewhere):
+python3 -m pip install --user --break-system-packages virtualenv
+python3 -m virtualenv .venv
+.venv/bin/pip install -r requirements.txt                        # project deps
 ```
 
-Then (all pipeline commands use `.venv/bin/python`):
+(Windows: use `python` not `python3`, and `.venv\Scripts\pip.exe` for the install.)
+
+Then verify auth (all pipeline commands use the venv's Python — `.venv/bin/python`
+on Linux/macOS, `.venv\Scripts\python.exe` on Windows):
 
 ```bash
 .venv/bin/python - <<'EOF'

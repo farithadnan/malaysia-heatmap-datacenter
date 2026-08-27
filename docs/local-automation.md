@@ -22,6 +22,18 @@ Safe to re-run: fetch and queue both dedupe — re-runs cost nothing but the LLM
 calls on genuinely new-ish text (dedupe happens BEFORE queueing, after
 extraction, and LLM only reads articles fetch has never seen).
 
+### Credential-free dry run (no `.env` needed)
+
+To exercise only the read-only stages — **watch** and **fetch** — and skip the
+LLM extract + Sheets queue stages (which need `.env` credentials), pass the flag:
+
+```bash
+bash scripts/run_pipeline.sh --no-credentials
+```
+
+This is useful before you have your LLM/Sheets keys, or to re-run just the
+discovery half of the pipeline without spending any LLM calls.
+
 ## Scheduling it (pick one)
 
 ### Windows Task Scheduler (recommended on this box)

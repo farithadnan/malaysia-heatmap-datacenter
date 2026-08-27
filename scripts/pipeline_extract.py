@@ -27,14 +27,12 @@ from scripts.common import link_digest
 from scripts.csv_to_geojson import SCHEMA
 from scripts.env import load_dotenv
 from scripts.llm import make_llm_client_from_env  # provider factory (scripts/llm)
-from scripts.llm.clients import post_json
 
-FIRECRAWL_SCRAPE_URL = "https://api.firecrawl.dev/v1/scrape"
 MAX_ARTICLE_CHARS = 12_000          # keep prompts cheap; big articles truncate
 STATUS_VALUES = {"", "operating", "under construction", "planned"}
 CAPACITY_TYPES = {"", "confirmed", "estimated"}
 
-# ---------------------------------------------------------------- scraping --
+# ------------------------------------------------------------ local text --
 
 class _TextStripper(HTMLParser):
     SKIP = {"script", "style", "noscript", "head"}
@@ -61,17 +59,6 @@ def html_to_text(html):
     p.feed(html)
     return " ".join("".join(p.parts).split())
 
-
-def make_firecrawl_scraper(api_key, poster=post_json):
-    """Firecrawl /scrape as a scraper: url -> clean markdown text (None on fail)."""
-    def scrape(url):
-        resp = poster(FIRECRAWL_SCRAPE_URL,
-                      {"Authorization": f"Bearer {api_key}", "Content-Type": "application/json"},
-                      {"url": url, "formats": ["markdown"]})
-        if not resp.get("success"):
-            return None
-        return resp.get("data", {}).get("markdown")
-    return scrape
 
 # ------------------------------------------------------------- llm clients --
 
@@ -156,7 +143,7 @@ def dedupe_against_existing(new_rows, existing_rows):
     return kept, skipped
 
 
-def run_extraction(articles_dir, findings_path, llm_client, today, scraper=None):
+def run_extraction(articles_dir, findings_path, llm_client, today):
     """All .html/.md articles from a watch/fetch sweep -> schema rows + skip log."""
     with open(findings_path, encoding="utf-8") as f:
         findings = json.load(f)
@@ -173,17 +160,8 @@ def run_extraction(articles_dir, findings_path, llm_client, today, scraper=None)
         article = by_digest.get(digest)
         link = article["link"] if article else None
         source = link or f"{articles_dir}/{digest}"
-        if scraper and link:
-            try:
-                text = scraper(link)
-            except Exception:      # scraper down/bad key -> local stripper is the seam
-                text = None
-            if text is None:
-                with open(path, encoding="utf-8", errors="replace") as f:
-                    text = html_to_text(f.read())
-        else:
-            with open(path, encoding="utf-8", errors="replace") as f:
-                text = html_to_text(f.read())
+        with open(path, encoding="utf-8", errors="replace") as f:
+            text = html_to_text(f.read())
         row, reason = extract_article(text, source, llm_client, today)
         if row:
             rows.append(row)
@@ -202,11 +180,8 @@ def main(argv):
 
     load_dotenv()
     client = make_llm_client_from_env(os.environ)
-    scraper = (make_firecrawl_scraper(os.environ["FC_API_KEY"])
-               if os.environ.get("FC_API_KEY") else None)
     today = date.today().isoformat()
-    result = run_extraction(args.articles, args.findings, client, today,
-                            scraper=scraper)
+    result = run_extraction(args.articles, args.findings, client, today)
 
     existing = []
     for path in args.existing:

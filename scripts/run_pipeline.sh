@@ -3,10 +3,15 @@
 # Everything that touches credentials, money (LLM), or writes data runs HERE
 # only. GitHub holds zero secrets (security decision, 2026-08-26).
 #
-# Usage:  bash scripts/run_pipeline.sh
-# Cron:   see docs/local-automation.md
+# Usage:  bash scripts/run_pipeline.sh [--no-credentials]
+#   --no-credentials : run only the read-only stages (watch, fetch) and skip the
+#                      LLM extract + Sheets queue stages, which need .env credentials.
+#   Cron: see docs/local-automation.md
 set -euo pipefail
 cd "$(dirname "$0")/.."
+
+NO_CREDS=0
+[ "${1:-}" = "--no-credentials" ] && NO_CREDS=1
 
 TODAY=$(date +%F)
 PY=.venv/bin/python
@@ -19,6 +24,13 @@ $PY -m scripts.pipeline_watch --config data/sources.json \
 echo "== 2/4 fetch (new items only) =="
 $PY -m scripts.pipeline_fetch --findings "data/raw/watch-$TODAY.json" \
     --state data/raw/download-state.json --articles data/raw/articles
+
+if [ "$NO_CREDS" -eq 1 ]; then
+  echo "== 3/4 SKIPPED (extract needs LLM credentials in .env) =="
+  echo "== 4/4 SKIPPED (queue needs GCP_SA_JSON + SHEET_ID in .env) =="
+  echo "== done (read-only only): $(date -Is) =="
+  exit 0
+fi
 
 echo "== 3/4 extract (LLM — your endpoint, .env) =="
 # Modal-style serverless endpoints can answer 401/503 while cold-starting;
